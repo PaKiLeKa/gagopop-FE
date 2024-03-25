@@ -1,3 +1,13 @@
+import Calandar from '@/components/calandar/Calandar';
+import SearchBar from '@/components/searchbar/SearchBar';
+
 export default function Home() {
-  return <div>지도가 나오는 메인페이지</div>;
+  return (
+    <div>
+      <Calandar />
+      <SearchBar />
+      <div>Map</div>
+      <div>Pop-Up Information Tab</div>
+    </div>
+  );
 }
