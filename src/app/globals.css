@@ -11,5 +11,8 @@ body {
   position: relative;
   width: 400px;
   height: 100vh;
-  background-color: aquamarine;
+  background-color: white;
+  overflow: hidden;
+  /* 네비게이션바 크기와 동일하게 설정하면 되는 값 */
+  padding-bottom: 64px;
 }
