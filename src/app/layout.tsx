@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import Navbar from '../components/navigaition/Navbar';
+import RecoilRootWrap from '@/util/RecoilRootWrap';
 
 export const metadata: Metadata = {
   title: '가고팝',
@@ -21,8 +22,10 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body>
-        {children}
-        <Navbar />
+        <RecoilRootWrap>
+          {children}
+          <Navbar />
+        </RecoilRootWrap>
       </body>
     </html>
   );
