@@ -5,7 +5,7 @@
 html {
   display: flex;
   justify-content: center;
-  background-color: gray;
+  background-color: #fcc32e;
 }
 body {
   position: relative;
