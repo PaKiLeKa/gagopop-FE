@@ -3,6 +3,8 @@
 import Script from 'next/script';
 import { useEffect, useState } from 'react';
 import CurrentPositionIcon from '../../../public/icons/currentPosition.svg';
+import Splash from '../splash/Splash';
+import Testicon from '../../../public/icons/marker/startpin.svg';
 
 export default function Map() {
   const [src, setSrc] = useState<string>();
@@ -31,22 +33,14 @@ export default function Map() {
           scrollwheel: true,
         });
 
-        //팝업 생성
-        const content =
-          "<div style='position: relative;'>" +
-          "<div style='font-size: 12px;'>" +
-          '내위치' +
-          '</div>' +
-          '</div>';
-
         const marker = new window.Tmapv2.Marker({
           position: new window.Tmapv2.LatLng(lat, lon),
           map: mapInstance,
         });
-
+        var customMarkerImageUrl = 'https://via.placeholder.com/50';
+        marker.setIcon(customMarkerImageUrl);
         const InfoWindow = new window.Tmapv2.InfoWindow({
           position: new window.Tmapv2.LatLng(lat, lon),
-          content: content,
           type: 2,
           map: mapInstance,
         });
@@ -113,7 +107,7 @@ export default function Map() {
           </button>
         </div>
       ) : (
-        <div>Loading...</div>
+        <Splash />
       )}
     </>
   );
