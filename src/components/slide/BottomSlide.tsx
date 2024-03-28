@@ -14,14 +14,14 @@ export default function BottomSlide({ content }: { content: ReactNode }) {
       {/* //슬라이딩 패널 */}
       <div
         className={`absolute bottom-0 w-full bg-white transition-all duration-300 ease-in-out ${
-          open ? 'h-[93%] overflow-auto pb-16 z-10' : 'h-28' //네비게이션보다 조금위로 하면 될 듯
+          open ? 'h-[92%] pb-10 z-10' : 'h-28' //네비게이션보다 조금위로 하면 될 듯
         }`}
       >
         <button onClick={toggleSlide} className='flex justify-center items-center w-full'>
           <div className='mt-1 bg-gray-300 w-5 h-1 rounded-full'></div>
         </button>
         {/* 슬라이딩 패널 내용 */}
-        <div>
+        <div className='overflow-auto h-[93%]'>
           {content}
           {content}
           {content}
