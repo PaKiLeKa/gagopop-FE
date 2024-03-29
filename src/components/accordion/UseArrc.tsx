@@ -5,12 +5,14 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 
-export default function AccordionList() {
+export default function UseArrc() {
   return (
-    <Accordion type='single' collapsible className='w-full'>
+    <Accordion type='single' collapsible className='w-full text-sm font-light'>
       <AccordionItem value='item-1'>
         <AccordionTrigger>팝업스토어 제보는 어떻게 하나요?</AccordionTrigger>
-        <AccordionContent>고객센터 우측 탭의 제보 혹은 문의하기를 참조해주세요.</AccordionContent>
+        <AccordionContent className='text-xs text-gray-400 font-light'>
+          고객센터 우측 탭의 제보 혹은 문의하기를 참조해주세요.
+        </AccordionContent>
       </AccordionItem>
       <AccordionItem value='item-2'>
         <AccordionTrigger>회원 탈퇴는 어떻게 하나요?</AccordionTrigger>
