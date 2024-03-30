@@ -2,22 +2,25 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PopupCard from '@/components/card/PopupCard';
-import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Wishlist() {
   const [activeTab, setActiveTab] = useState<string>('open');
+  const router = useRouter();
 
   return (
     <div className='h-[100vh]'>
       <div className='relative flex justify-center items-center w-full h-14 px-1 py-2 border border-b-black'>
-        <Link
-          href={'/'}
-          className='absolute left-3 flex justify-center items-center bg-gray-200 rounded-full aspect-square h-10 mr-1 hover:bg-gray-100'
+        <div
+          onClick={() => {
+            router.back();
+          }}
+          className='absolute left-3 flex justify-center items-center bg-gray-200 rounded-full aspect-square h-10 mr-1 cursor-pointer hover:bg-gray-100'
         >
           <div className='text-2xl'>←</div>
-        </Link>
-        <span className='text-xl'>위시리스트</span>
+        </div>
+        <span className='text-xl'>위시 리스트</span>
       </div>
       <Tabs defaultValue='open' className='w-full h-full overflow-auto '>
         <TabsList className='flex justify-start w-full h-[52px] rounded-none border-b border-b-gray-200 bg-white'>
@@ -30,8 +33,7 @@ export default function Wishlist() {
           >
             {activeTab === 'open' ? (
               <>
-                <div className='absolute top-[43px] w-full border-b-8 rounded-full border-red-500'></div>
-                <div className='absolute top-[47px] w-full border-b-8 border-white'></div>
+                <div className='absolute top-[43px] w-full h-1 rounded-[50px_50px_0_0] bg-red-500'></div>
               </>
             ) : null}
             오픈중
@@ -45,8 +47,7 @@ export default function Wishlist() {
           >
             {activeTab === 'openyet' ? (
               <>
-                <div className='absolute top-[43px] w-full border-b-8 rounded-full border-red-500'></div>
-                <div className='absolute top-[47px] w-full border-b-8 border-white'></div>
+                <div className='absolute top-[43px] w-full h-1 rounded-[50px_50px_0_0] bg-red-500'></div>
               </>
             ) : null}
             오픈예정
@@ -60,8 +61,7 @@ export default function Wishlist() {
           >
             {activeTab === 'end' ? (
               <>
-                <div className='absolute top-[43px] w-full border-b-8 rounded-full border-red-500'></div>
-                <div className='absolute top-[47px] w-full border-b-8 border-gray-200'></div>
+                <div className='absolute top-[43px] w-full h-1 rounded-[50px_50px_0_0] bg-red-500'></div>
               </>
             ) : null}
             종료
@@ -82,7 +82,7 @@ export default function Wishlist() {
           </div>
         </TabsContent>
         <TabsContent value='end'>
-          <div className='flex items-center h-[42px] pl-3 -mt-2 -mb-3 text-xs bg-gray-200 text-gray-500 z-10'>
+          <div className='flex items-center h-[42px] pl-3 -mt-2 -mb-3 text-xs bg-gray-200 text-gray-500'>
             종료된 팝업스토어는<span className='font-bold text-black'>&nbsp;30일 후에&nbsp;</span>
             자동으로 사라집니다.
           </div>
