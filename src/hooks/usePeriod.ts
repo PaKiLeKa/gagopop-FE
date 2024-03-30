@@ -9,7 +9,7 @@ const usePeriod = (popup: PopupType) => {
     const today = new Date().getTime();
     const startDate = new Date(popup?.startDate).getTime();
     const endDate = new Date(popup?.endDate).getTime();
-    
+
     if ((startDate <= today && today <= endDate) || (startDate <= today && startDate === endDate)) {
       setPeriodState('open');
       if (Math.floor((endDate - today) / (1000 * 60 * 60 * 24)) < 8) {
@@ -28,3 +28,4 @@ const usePeriod = (popup: PopupType) => {
 
   return { periodState, diffDay };
 };
+export default usePeriod;

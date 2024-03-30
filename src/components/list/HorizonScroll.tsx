@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 
 export default function HorizonScroll({ list }: { list: any }) {
   const router = useRouter();
-  console.log(list);
+  
   return (
     <>
       <div className='flex justify-between w-full px-3'>

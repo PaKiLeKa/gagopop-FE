@@ -9,7 +9,7 @@ export default function Badge({ badgeState, diff }: { badgeState: string; diff: 
     <div className='flex justify-center items-center w-12 h-4 text-[10px] text-white bg-gray-900 rounded-full'>
       종료 D-{diff}
     </div>
-  ) : badgeState === 'opensoon' && diff < 8 ? (
+  ) : badgeState === 'opensoon' && diff > 0 && diff < 8 ? (
     <div className='flex justify-center items-center w-12 h-4 text-[10px] text-white bg-blue-500 rounded-full'>
       오픈 D-{diff}
     </div>
