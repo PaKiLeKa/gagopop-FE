@@ -11,7 +11,7 @@ export default function PopUpList() {
   const [list, setList] = useState<PopupList>([]);
   const pathname = usePathname();
   const router = useRouter();
-  
+
   type PopupList = [string, PopupType[]];
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function PopUpList() {
       .then((res) => setList(res))
       .catch((e) => console.log(e));
   }, []);
-  console.log(list);
+
   return (
     <div className='h-[100vh]'>
       <div className='relative flex justify-center items-center w-full h-14 px-1 py-2 border border-b-black'>

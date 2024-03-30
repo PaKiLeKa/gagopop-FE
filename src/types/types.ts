@@ -11,6 +11,7 @@ export interface PopupType {
   startDate: Date;
   snsLink: string;
   operatingTime: string;
+  promoted: boolean;
 }
 
 export interface PopupTypewithWish {

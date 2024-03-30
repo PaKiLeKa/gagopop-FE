@@ -20,6 +20,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const initailPathName = pathname?.split('/')[1];
   const wishPathName = pathname?.split('/')[3];
+
   useEffect(() => {
     apiCred
       .get('/user/profile')
@@ -48,7 +49,11 @@ export default function Navbar() {
   useEffect(() => {
     const isLoginCookie = getCookie('islogin');
     if (isLoginCookie !== null) setIsLogIn(isLoginCookie);
+    else {
+      setIsLogIn('false');
+    }
   }, []);
+  console.log(isLogin);
 
   return (
     <div className='absolute bottom-0 flex just items-center w-full h-16 p-4 bg-white border-t border-black z-20 shadow-[0_-10px_10px_-10px_rgba(0,0,0,0.4)]'>
@@ -79,7 +84,7 @@ export default function Navbar() {
           <div className='absolute top-0 bg-black w-[80px] h-1 rounded-[0_0_80px_80px]'></div>
         ) : null}
       </Link>
-      {isLogin ? (
+      {isLogin === 'true' ? (
         <Link
           href={'/profile/' + userEmail}
           className='flex flex-col justify-center items-center w-[84px] group'

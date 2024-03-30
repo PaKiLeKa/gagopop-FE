@@ -11,8 +11,8 @@ import { useRouter } from 'next/navigation';
 export default function Login() {
   const router = useRouter();
   const handleLogin = () => {
-    router.push('https://gagopop.kro.kr/oauth2/authorization/google');
     setCookie('islogin', 'true', 60 * 60 * 60 * 60);
+    router.push('https://gagopop.kro.kr/oauth2/authorization/google');
   };
 
   function setCookie(name: string, value: string, milliseconds: number) {

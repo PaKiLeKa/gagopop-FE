@@ -8,9 +8,17 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import CalandarIcon from '../../../public/icons/calandar.svg';
 import { dateState } from '@/store/search';
 import { useRecoilState } from 'recoil';
+import { SelectSingleEventHandler } from 'react-day-picker';
 
 export default function DatePicker({ searchBarStyle }: { searchBarStyle: string }) {
   const [date, setDateState] = useRecoilState<Date>(dateState);
+
+  const handleDateSelect: SelectSingleEventHandler = (val: Date | undefined) => {
+    if (val !== undefined) {
+      setDateState(val);
+    }
+  };
+
   return (
     <>
       {searchBarStyle === 'circle' ? (
@@ -26,7 +34,7 @@ export default function DatePicker({ searchBarStyle }: { searchBarStyle: string 
             <Calendar
               mode='single'
               selected={date}
-              onSelect={setDateState}
+              onSelect={handleDateSelect}
               initialFocus
               className=''
             />
@@ -34,26 +42,24 @@ export default function DatePicker({ searchBarStyle }: { searchBarStyle: string 
         </Popover>
       ) : searchBarStyle === 'bar' ? (
         <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant={'outline'}
-              className={cn(
-                'w-[360px] h-14 justify-start gap-3 text-left font-normal text-xl rounded-none border-b-black',
-                !date && 'text-muted-foreground',
-              )}
-            >
-              <div className='flex justify-center items-center w-10 h-10 -ml-1 bg-gray-300 rounded-full'>
-                <CalandarIcon />
-              </div>
-              {date ? (
-                format(date, 'yyyy.MM.dd')
-              ) : (
-                <span className='text-xl'>날짜를 지정해주세요.</span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className='w-auto p-0'>
-            <Calendar mode='single' selected={date} onSelect={setDateState} initialFocus />
+          <Button
+            variant={'outline'}
+            className={cn(
+              'w-[360px] h-14 justify-start gap-3 text-left font-normal text-xl rounded-none border-b-black',
+              !date && 'text-muted-foreground',
+            )}
+          >
+            <div className='flex justify-center items-center w-10 h-10 -ml-1 bg-gray-300 rounded-full'>
+              <CalandarIcon />
+            </div>
+            {date ? (
+              format(date, 'yyyy.MM.dd')
+            ) : (
+              <span className='text-xl'>날짜를 지정해주세요.</span>
+            )}
+          </Button>
+          <PopoverContent className='w-auto p-0 absolute'>
+            <Calendar mode='single' selected={date} onSelect={handleDateSelect} initialFocus />
           </PopoverContent>
         </Popover>
       ) : (
@@ -70,7 +76,13 @@ export default function DatePicker({ searchBarStyle }: { searchBarStyle: string 
             </Button>
           </PopoverTrigger>
           <PopoverContent className='w-full p-0'>
-            <Calendar mode='single' selected={date} onSelect={setDateState} initialFocus />
+            <Calendar
+              className='absolute -right-9 -top-4'
+              mode='single'
+              selected={date}
+              onSelect={handleDateSelect}
+              initialFocus
+            />
           </PopoverContent>
         </Popover>
       )}
