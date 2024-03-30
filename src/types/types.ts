@@ -22,3 +22,11 @@ export interface currentMapType {
   setCenter: (arg0: any) => void;
   setZoom: (arg0: number) => void;
 }
+
+export interface User {
+  email: string;
+  nickname: null;
+  wishlistTotal: number;
+  togolistTotal: number;
+  stampTotal: number;
+}

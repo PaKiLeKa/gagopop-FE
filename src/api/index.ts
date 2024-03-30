@@ -3,8 +3,11 @@ import { BASE_URL } from './constants';
 
 export const api = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    // Authorization: `Bearer ${AUTH_TOKEN}`,
-  },
+  headers: {},
+});
+
+export const apiCred = axios.create({
+  baseURL: BASE_URL,
+  headers: {},
   withCredentials: true,
 });

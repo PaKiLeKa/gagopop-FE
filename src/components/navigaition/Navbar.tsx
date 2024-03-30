@@ -12,11 +12,24 @@ import HomeHover from '../../../public/icons/navbar/home_h.png';
 import PopupHover from '../../../public/icons/navbar/popup_h.png';
 import WishHover from '../../../public/icons/navbar/wish_h.png';
 import ProfileHover from '../../../public/icons/navbar/profile_h.png';
+import { apiCred } from '@/api';
 
 export default function Navbar() {
   const [isLogin, setIsLogIn] = useState<string>('false');
+  const [userEmail, setUserEmail] = useState<string>('');
   const pathname = usePathname();
   const initailPathName = pathname?.split('/')[1];
+  const wishPathName = pathname?.split('/')[3];
+  useEffect(() => {
+    apiCred
+      .get('/user/profile')
+      .then((res) => {
+        setUserEmail(res.data.email);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   function getCookie(name: string) {
     var nameEQ = name + '=';
@@ -56,25 +69,26 @@ export default function Navbar() {
         ) : null}
       </Link>
       <Link
-        href={'/wishlist/id'}
+        href={'/profile/' + userEmail + '/wishlist'}
         className='flex flex-col justify-center items-center w-[84px] group'
       >
         <Image src={WishIcon} alt='위시리스트으로 이동' className='group-hover:hidden' />
         <Image src={WishHover} alt='위시리스트으로 이동' className='hidden group-hover:block' />
         <p className='text-xs text-gray-400 group-hover:text-black'>위시리스트</p>
-        {initailPathName === 'wishlist' ? (
+        {wishPathName === 'wishlist' ? (
           <div className='absolute top-0 bg-black w-[80px] h-1 rounded-[0_0_80px_80px]'></div>
         ) : null}
       </Link>
       {isLogin ? (
         <Link
-          href={'/profile/id'}
+          href={'/profile/' + userEmail}
           className='flex flex-col justify-center items-center w-[84px] group'
         >
           <Image src={ProfileIcon} alt='프로필로 이동' className='group-hover:hidden' />
           <Image src={ProfileHover} alt='프로필로 이동' className='hidden group-hover:block' />
           <p className='text-xs text-gray-400 group-hover:text-black'>내정보</p>
-          {initailPathName === 'profile' || initailPathName === 'cs-center' ? (
+          {(wishPathName !== 'wishlist' && initailPathName === 'profile') ||
+          initailPathName === 'cs-center' ? (
             <div className='absolute top-0 bg-black w-[80px] h-1 rounded-[0_0_80px_80px]'></div>
           ) : null}
         </Link>
