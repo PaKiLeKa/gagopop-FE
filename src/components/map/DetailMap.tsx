@@ -3,11 +3,11 @@
 import Script from 'next/script';
 import { useEffect, useState } from 'react';
 
-export default function DetailMap() {
+export default function DetailMap({ lon, lat }: { lon: number; lat: number }) {
   const [src, setSrc] = useState<string>();
   const APPKEY = process.env.NEXT_PUBLIC_TMAP_API;
-  const testlat = 37.5652045;
-  const testlon = 126.98702028;
+  const testlat = lat;
+  const testlon = lon;
 
   const onLoadMap = (lat: number, lon: number) => {
     const mapInstance = new window.Tmapv2.Map('map_div', {
