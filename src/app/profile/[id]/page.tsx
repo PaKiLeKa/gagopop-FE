@@ -23,7 +23,6 @@ export default function Profile() {
         console.log(error);
       });
   }, []);
-  console.log(userData);
 
   return (
     <div className='flex flex-col items-center mt-8'>
@@ -60,7 +59,7 @@ export default function Profile() {
       <div className='flex flex-col w-full px-3'>
         <div className='flex gap-2 p-3 py-4 border-b'>
           <EditIcon />
-          <Link href={'/profile/id/edit'}>내 정보 수정</Link>
+          <Link href={'/profile/' + userData?.email + '/edit'}>내 정보 수정</Link>
         </div>
         <div className='flex gap-2 p-3 py-4 border-b'>
           <CSIcon />
