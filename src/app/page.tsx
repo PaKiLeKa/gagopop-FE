@@ -7,7 +7,7 @@ import BottomSlide from '@/components/slide/BottomSlide';
 import { destinationState } from '@/store/search';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { api } from '@/api';
+import { api, apiCred } from '@/api';
 import { PopupTypewithWish } from '../types/types';
 export default function Home() {
   const [searchStyle, setSearchStyle] = useState('circle');
@@ -24,7 +24,7 @@ export default function Home() {
 
   useEffect(() => {
     api
-      .get('/popup/find-all-with-wish')
+      .get('/popup/find-all')
       .then((res) => {
         setPopupList(res.data);
       })
@@ -45,8 +45,8 @@ export default function Home() {
                 <PopupCard
                   key={popup.popupStore.id}
                   icon={popup.inWishlist === true ? 'heart' : 'emptyheart'}
-                  info={popup.popupStore}
-                  period={['open', 'opensoon', 'endsoon', 'end']}
+                  info={popup}
+                  period={['open', 'opensoon', 'endsoon']}
                 />
               ))}
             </div>

@@ -55,7 +55,7 @@ export default function Map() {
           position: new window.Tmapv2.LatLng(lat, lon),
           map: mapInstance,
         });
-        var customMarkerImageUrl = 'https://via.placeholder.com/50';
+        const customMarkerImageUrl = 'https://via.placeholder.com/50';
         marker.setIcon(customMarkerImageUrl);
         const InfoWindow = new window.Tmapv2.InfoWindow({
           position: new window.Tmapv2.LatLng(lat, lon),
@@ -104,7 +104,7 @@ export default function Map() {
 
   useEffect(() => {
     api
-      .get('/popup/find-all-with-wish')
+      .get('/popup/find-all')
       .then((res) => {
         setPopupList(res.data);
         console.log(res.data);

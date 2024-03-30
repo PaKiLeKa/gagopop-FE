@@ -20,19 +20,24 @@ import { api } from '@/api';
 import { useEffect, useState } from 'react';
 import { PopupType, PopupTypewithWish } from '@/types/types';
 import { usePathname } from 'next/navigation';
+import usePeriod from '@/hooks/usePeriod';
 
 export default function PopUpDetail() {
   const [destination, setDestinationState] = useRecoilState(destinationState);
   const [popup, setPopup] = useState<PopupTypewithWish>();
   const pathname = usePathname();
+  const { periodState, diffDay } = usePeriod(popup?.popupStore!);
+
   const handleDestinationBtn = () => {
-    setDestinationState([...destination, popup?.popupStore]);
+    const filteredPopups = popup ? [popup.popupStore] : [];
+
+    setDestinationState([...destination, ...filteredPopups]);
   };
   const searchParams = pathname.split('/')[2];
 
   useEffect(() => {
     api
-      .get('/popup/find-all-with-wish')
+      .get('/popup/find-all')
       .then((res) =>
         res.data.find(
           (item: { popupStore: { id: number } }) => item.popupStore.id == parseInt(searchParams),
@@ -43,14 +48,14 @@ export default function PopUpDetail() {
         console.log('error');
       });
   }, []);
-  
+
   return (
     <div className='h-full pb-[104px]'>
       <SearchBar searchBarStyle={'date'} />
       <div className='h-full overflow-auto'>
         <div className='relative aspect-square'>
           <Image
-            src={popup?.popupStore.imageUrl}
+            src={popup ? popup?.popupStore?.imageUrl : ''}
             alt='팝업 스토어 이미지'
             fill
             className='brightness-75'
@@ -58,13 +63,18 @@ export default function PopUpDetail() {
           <div className='absolute'>
             <div className='flex flex-col justify-between w-[360px] aspect-square p-4'>
               <div className='flex flex-col gap-2'>
+                {popup?.inWishlist ? (
+                  <HeartIcon width='40' height='40' viewBox='0 0 20 20' />
+                ) : (
+                  <EmptyHeartIcon width='40' height='40' viewBox='0 0 20 20' />
+                )}
                 <EmptyHeartIcon width='40' height='40' viewBox='0 0 20 20' />
                 <TogoIcon />
                 <ShareIcon />
               </div>
               <div className='flex justify-between items-end text-white'>
                 <div>
-                  <Badge badgeState='end' />
+                  <Badge badgeState={periodState} diff={diffDay} />
                   <p>{`${popup?.popupStore.startDate
                     .toString()
                     .substring(0, 10)} ~ ${popup?.popupStore.endDate
@@ -123,7 +133,10 @@ export default function PopUpDetail() {
               <MapIcon />
               <p>지도</p>
             </div>
-            <DetailMap lon={popup?.popupStore.longitude} lat={popup?.popupStore.latitude} />
+            <DetailMap
+              lon={popup ? popup?.popupStore.longitude : 0}
+              lat={popup ? popup?.popupStore.latitude : 0}
+            />
           </div>
         </div>
       </div>

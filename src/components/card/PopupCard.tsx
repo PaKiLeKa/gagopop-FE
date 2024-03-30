@@ -8,50 +8,27 @@ import DestinationIcon from '../../../public/icons/marker/destination_s.svg';
 import { useRecoilState } from 'recoil';
 import { destinationState } from '@/store/search';
 import Badge from '../badge/Badge';
-import { PopupType } from '@/types/types';
-import { useEffect, useState } from 'react';
+import { PopupType, PopupTypewithWish } from '@/types/types';
 import Test from '../../../public/images/dummy.png';
 import { useRouter } from 'next/navigation';
+import usePeriod from '@/hooks/usePeriod';
+
 export default function PopupCard({
   icon,
   info,
   period,
 }: {
   icon: string;
-  info: PopupType;
+  info: PopupTypewithWish;
   period: string[];
 }) {
   const [destination, setDestinationState] = useRecoilState(destinationState);
-  const [periodState, setPeriodState] = useState<string>('');
-  const [diffDay, setDiffDay] = useState<number>(0);
   const router = useRouter();
-
   const handleDestinationBtn = () => {
-    setDestinationState([...destination, info]);
+    setDestinationState([...destination, info.popupStore]);
   };
-
-  // 날짜 관련
-  useEffect(() => {
-    const today = new Date().getTime();
-    const startDate = new Date(info?.startDate).getTime();
-    const endDate = new Date(info?.endDate).getTime();
-    
-    if ((startDate <= today && today <= endDate) || (startDate <= today && startDate === endDate)) {
-      setPeriodState('open');
-      if (Math.floor((endDate - today) / (1000 * 60 * 60 * 24)) < 8) {
-        setPeriodState('endsoon');
-        setDiffDay(Math.floor((endDate - today) / (1000 * 60 * 60 * 24)));
-      }
-    } else {
-      if (Math.floor((today - endDate) / (1000 * 60 * 60 * 24)) > 0) {
-        setPeriodState('end');
-      } else {
-        setPeriodState('opensoon');
-        setDiffDay(Math.floor((startDate - today) / (1000 * 60 * 60 * 24)));
-      }
-    }
-  }, []);
-
+  const { periodState, diffDay } = usePeriod(info.popupStore);
+  
   return (
     <div
       className={`flex h-[120px] p-3 border-b border-b-gray-100 ${
@@ -61,9 +38,9 @@ export default function PopupCard({
       <div className='w-[100px] h-[100px] relative rounded-md aspect-square overflow-hidden'>
         <Image
           onClick={() => {
-            router.push(`/popup/${info?.id}`);
+            router.push(`/popup/${info?.popupStore.id}`);
           }}
-          src={info?.imageUrl ? info.imageUrl : Test}
+          src={info?.popupStore.imageUrl ? info.popupStore.imageUrl : Test}
           alt='설명'
           className='w-[100px] h-[100px]'
           fill
@@ -74,23 +51,23 @@ export default function PopupCard({
         <div className='w-full'>
           <div className='flex justify-between mb-2'>
             <p className='text-[10px] text-gray-400'>
-              {info?.startDate.toString().substring(0, 10) +
+              {info?.popupStore.startDate.toString().substring(0, 10) +
                 ' ~ ' +
-                info?.endDate.toString().substring(0, 10)}
+                info?.popupStore.endDate.toString().substring(0, 10)}
             </p>
             <Badge badgeState={periodState} diff={diffDay} />
           </div>
           <p
             onClick={() => {
-              router.push(`/popup/${info?.id}`);
+              router.push(`/popup/${info?.popupStore.id}`);
             }}
             className='font-bold -mt-2'
           >
-            {info?.name}
+            {info?.popupStore.name}
           </p>
         </div>
         <div className='flex justify-between items-end'>
-          <p className='text-[10px] text-gray-400'>{info?.address}</p>
+          <p className='text-[10px] text-gray-400'>{info?.popupStore.address}</p>
           <button
             onClick={() => {
               handleDestinationBtn();

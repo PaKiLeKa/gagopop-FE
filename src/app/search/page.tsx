@@ -6,11 +6,11 @@ import SearchBar from '@/components/searchbar/SearchBar';
 import ToggleCategory from '@/components/toggle/ToggleCategory';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { PopupType } from '../../types/types';
+import { PopupType, PopupTypewithWish } from '../../types/types';
 
 export default function SearchList() {
   const [period, setPeriod] = useState<string[]>([]);
-  const [searchList, setSearchList] = useState<PopupType[]>([]);
+  const [searchList, setSearchList] = useState<PopupTypewithWish[]>([]);
   const searchParams = useSearchParams();
   const search = searchParams?.get('search');
   const date = searchParams?.get('date');
@@ -23,14 +23,13 @@ export default function SearchList() {
     api
       .get(`/popup/find?name=${search}&date=${date}`)
       .then((res) => {
-        setSearchList(res.data);
+        setSearchList(res.data.popupStore);
       })
       .catch(() => {
         console.log('error');
       });
   }, []);
 
-  console.log(period);
   return (
     <div className='h-[100vh]'>
       <SearchBar searchBarStyle={'date'} />
@@ -41,12 +40,7 @@ export default function SearchList() {
       </div>
       <div className='h-full mt-4 pb-48 overflow-auto'>
         {searchList?.map((popup, _i) => (
-          <PopupCard
-            key={popup.id}
-            icon={'heart'}
-            info={popup}
-            period={period}
-          />
+          <PopupCard key={popup.popupStore.id} icon={'heart'} info={popup} period={period} />
         ))}
       </div>
     </div>
