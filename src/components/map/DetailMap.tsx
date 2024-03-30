@@ -41,7 +41,7 @@ export default function DetailMap({ lon, lat }: { lon: number; lat: number }) {
       script.src = `${src}tmapjs2.min.js?version=20231206`;
       script.async = true;
       script.onload = () => {
-        onLoadMap(testlat, testlon);
+        if (typeof lat !== undefined && typeof lon !== undefined) onLoadMap(testlat, testlon);
       };
 
       //이전 스크립트 제거
@@ -52,7 +52,7 @@ export default function DetailMap({ lon, lat }: { lon: number; lat: number }) {
 
       document.body.appendChild(script);
     }
-  }, [src]);
+  }, [lat]);
 
   return (
     <>
