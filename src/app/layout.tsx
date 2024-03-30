@@ -6,6 +6,9 @@ import RecoilRootWrap from '@/util/RecoilRootWrap';
 export const metadata: Metadata = {
   title: '가고팝',
   description: '팝업 정보 및 위치 경로 서비스',
+  icons: {
+    icon: '/gagopop.ico',
+  },
 };
 
 declare global {
