@@ -7,8 +7,20 @@ import Image from 'next/image';
 import EditIcon from '../../../../public/icons/profile/edit.svg';
 import CSIcon from '../../../../public/icons/profile/cs.svg';
 import LogoutIcon from '../../../../public/icons/profile/logout.svg';
+import { useEffect } from 'react';
+import { api } from '@/api';
 
 export default function Profile() {
+  useEffect(() => {
+    api
+      .get('/user/profile')
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   return (
     <div className='flex flex-col items-center mt-8'>
       <div className='flex flex-col items-center'>
