@@ -5,15 +5,12 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useState } from 'react';
 import CalandarIcon from '../../../public/icons/calandar.svg';
-import { destinationState } from '@/store/destination';
+import { dateState } from '@/store/search';
 import { useRecoilState } from 'recoil';
 
 export default function DatePicker({ searchBarStyle }: { searchBarStyle: string }) {
-  const [date, setDate] = useState<Date>();
-  const [destination, setDestinationState] = useRecoilState(destinationState);
-
+  const [date, setDateState] = useRecoilState<Date>(dateState);
   return (
     <>
       {searchBarStyle === 'circle' ? (
@@ -26,7 +23,13 @@ export default function DatePicker({ searchBarStyle }: { searchBarStyle: string 
             </Button>
           </PopoverTrigger>
           <PopoverContent className='w-full p-0'>
-            <Calendar mode='single' selected={date} onSelect={setDate} initialFocus className='' />
+            <Calendar
+              mode='single'
+              selected={date}
+              onSelect={setDateState}
+              initialFocus
+              className=''
+            />
           </PopoverContent>
         </Popover>
       ) : searchBarStyle === 'bar' ? (
@@ -50,7 +53,7 @@ export default function DatePicker({ searchBarStyle }: { searchBarStyle: string 
             </Button>
           </PopoverTrigger>
           <PopoverContent className='w-auto p-0'>
-            <Calendar mode='single' selected={date} onSelect={setDate} initialFocus />
+            <Calendar mode='single' selected={date} onSelect={setDateState} initialFocus />
           </PopoverContent>
         </Popover>
       ) : (
@@ -67,7 +70,7 @@ export default function DatePicker({ searchBarStyle }: { searchBarStyle: string 
             </Button>
           </PopoverTrigger>
           <PopoverContent className='w-full p-0'>
-            <Calendar mode='single' selected={date} onSelect={setDate} initialFocus />
+            <Calendar mode='single' selected={date} onSelect={setDateState} initialFocus />
           </PopoverContent>
         </Popover>
       )}

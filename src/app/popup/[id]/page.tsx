@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import SearchBar from '@/components/searchbar/SearchBar';
 import DetailMap from '@/components/map/DetailMap';
-import Dummy from '../../../../public/images/dummy.png';
 import HeartIcon from '../../../../public/icons/heart.svg';
 import EmptyHeartIcon from '../../../../public/icons/emptyheart.svg';
 import TogoIcon from '../../../../public/icons/detail/togo.svg';
@@ -15,22 +14,47 @@ import MapIcon from '../../../../public/icons/detail/map.svg';
 import GrowIcon from '../../../../public/icons/detail/grow.svg';
 import IntroIcon from '../../../../public/icons/detail/intro.svg';
 import { useRecoilState } from 'recoil';
-import { destinationState } from '@/store/destination';
+import { destinationState } from '@/store/search';
 import Badge from '@/components/badge/Badge';
+import { api } from '@/api';
+import { useEffect, useState } from 'react';
+import { PopupType, PopupTypewithWish } from '@/types/types';
+import { usePathname } from 'next/navigation';
 
 export default function PopUpDetail() {
   const [destination, setDestinationState] = useRecoilState(destinationState);
-
+  const [popup, setPopup] = useState<PopupTypewithWish>();
+  const pathname = usePathname();
   const handleDestinationBtn = () => {
-    setDestinationState(['저장됨']);
+    setDestinationState([...destination, popup?.popupStore]);
   };
+  const searchParams = pathname.split('/')[2];
 
+  useEffect(() => {
+    api
+      .get('/popup/find-all-with-wish')
+      .then((res) =>
+        res.data.find(
+          (item: { popupStore: { id: number } }) => item.popupStore.id == parseInt(searchParams),
+        ),
+      )
+      .then((res) => setPopup(res))
+      .catch(() => {
+        console.log('error');
+      });
+  }, []);
+  
   return (
     <div className='h-full pb-[104px]'>
       <SearchBar searchBarStyle={'date'} />
       <div className='h-full overflow-auto'>
         <div className='relative aspect-square'>
-          <Image src={Dummy} alt='팝업 스토어 이미지' fill className='brightness-75' />
+          <Image
+            src={popup?.popupStore.imageUrl}
+            alt='팝업 스토어 이미지'
+            fill
+            className='brightness-75'
+          />
           <div className='absolute'>
             <div className='flex flex-col justify-between w-[360px] aspect-square p-4'>
               <div className='flex flex-col gap-2'>
@@ -41,8 +65,12 @@ export default function PopUpDetail() {
               <div className='flex justify-between items-end text-white'>
                 <div>
                   <Badge badgeState='end' />
-                  <p>0000.00.00~0000.00.00</p>
-                  <p className='text-2xl font-bold'>팝업 제목입니다</p>
+                  <p>{`${popup?.popupStore.startDate
+                    .toString()
+                    .substring(0, 10)} ~ ${popup?.popupStore.endDate
+                    .toString()
+                    .substring(0, 10)}`}</p>
+                  <p className='text-2xl font-bold'>{popup?.popupStore.name}</p>
                 </div>
                 <GrowIcon />
               </div>
@@ -54,23 +82,27 @@ export default function PopUpDetail() {
             <TimeIcon />
             <div className='text-sm'>
               <p>운영시간</p>
-              <p className='text-gray-400 font-light'>매일 : 00:00~00:00</p>
+              <p className='text-gray-400 font-light'>{popup?.popupStore.operatingTime}</p>
             </div>
           </div>
           <div className='flex gap-1'>
             <AddressIcon />
             <div className='text-sm'>
               <p>주소</p>
-              <p className='text-gray-400 font-light'>무신사 스퀘어 성수2</p>
+              <p className='text-gray-400 font-light'>{popup?.popupStore.address}</p>
             </div>
           </div>
           <div className='flex gap-1'>
             <SNSIcon />
             <div className='text-sm'>
               <p>SNS</p>
-              <a href='https://www.instagram.com/popup' className='text-blue-400 font-light'>
-                https://www.instagram.com/popup
-              </a>
+              {popup?.popupStore.snsLink ? (
+                <a href={popup.popupStore.snsLink} className='text-blue-400 font-light'>
+                  링크로 이동
+                </a>
+              ) : (
+                <p className='text-gray-400 font-light'>SNS링크가 없습니다.</p>
+              )}
             </div>
           </div>
           <div className='flex gap-2'>
@@ -79,9 +111,11 @@ export default function PopUpDetail() {
             </div>
             <div className='text-sm'>
               <p>팝업스토어 소개</p>
-              <p className='text-gray-400 font-light'>
-                멋진멋진 팝업스토어입니다.ㅁㄴㅇㄹㅁㄴㅇㄹㅁㄴㅇㄹㅁㄴㅇ 멋진 팝업스토어입니다.
-              </p>
+              {popup?.popupStore.info ? (
+                <p className='text-gray-400 font-light'>${popup.popupStore.info}</p>
+              ) : (
+                <p className='text-gray-400 font-light'>팝업 소개가 아직 작성되지 않았습니다.</p>
+              )}
             </div>
           </div>
           <div>
@@ -89,7 +123,7 @@ export default function PopUpDetail() {
               <MapIcon />
               <p>지도</p>
             </div>
-            <DetailMap />
+            <DetailMap lon={popup?.popupStore.longitude} lat={popup?.popupStore.latitude} />
           </div>
         </div>
       </div>
