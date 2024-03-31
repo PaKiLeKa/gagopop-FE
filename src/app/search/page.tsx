@@ -1,7 +1,7 @@
 'use client';
 
-import { api } from '@/api';
-import PopupCard from '@/components/card/PopupCard';
+import { api, apiCred } from '@/api';
+import PopupCard from '@/components/card/PopupCardWithWish';
 import SearchBar from '@/components/searchbar/SearchBar';
 import ToggleCategory from '@/components/toggle/ToggleCategory';
 import { useSearchParams } from 'next/navigation';
@@ -20,10 +20,11 @@ export default function SearchList() {
   };
 
   useEffect(() => {
-    api
+    apiCred
       .get(`/popup/find?name=${search}&date=${date}`)
       .then((res) => {
-        setSearchList(res.data.popupStore);
+        console.log(res.data);
+        setSearchList(res.data);
       })
       .catch(() => {
         console.log('error');
@@ -40,7 +41,7 @@ export default function SearchList() {
       </div>
       <div className='h-full mt-4 pb-48 overflow-auto'>
         {searchList?.map((popup, _i) => (
-          <PopupCard key={popup.popupStore.id} icon={'heart'} info={popup} period={period} />
+          <PopupCard key={popup.popupStore.id} info={popup} period={period} />
         ))}
       </div>
     </div>
