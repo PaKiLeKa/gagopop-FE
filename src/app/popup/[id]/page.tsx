@@ -13,6 +13,8 @@ import SNSIcon from '../../../../public/icons/detail/sns.svg';
 import MapIcon from '../../../../public/icons/detail/map.svg';
 import GrowIcon from '../../../../public/icons/detail/grow.svg';
 import IntroIcon from '../../../../public/icons/detail/intro.svg';
+import kakaoIcon from '../../../../public/icons/share/kakaoIcon.png';
+import LinkShareIcon from '../../../../public/icons/share/linkshare.png';
 import { useRecoilState } from 'recoil';
 import { destinationState } from '@/store/search';
 import Badge from '@/components/badge/Badge';
@@ -37,6 +39,25 @@ export default function PopUpDetail() {
     const filteredPopups = popup ? [popup.popupStore] : [];
 
     setDestinationState([...destination, ...filteredPopups]);
+  };
+
+  const copyURL = () => {
+    let currentUrl = window.document.location.href;
+    let t = document.createElement('textarea');
+    document.body.appendChild(t);
+    t.value = currentUrl;
+    t.select();
+    document.execCommand('copy');
+    document.body.removeChild(t);
+
+    alert('링크가 복사되었습니다.');
+  };
+
+  const handleShareToKakao = () => {
+    const { Kakao, location } = window;
+    Kakao.Share.sendScrap({
+      requestUrl: location.href,
+    });
   };
 
   const handdleAddWishButton = () => {
@@ -127,9 +148,23 @@ export default function PopUpDetail() {
                 <Popover>
                   <PopoverTrigger className='relative bottom-12  w-10 h-10 bg-transparent hover:brightness-50'></PopoverTrigger>
                   <PopoverContent>
-                    <div className='relative flex justify-center items-center gap-4 bg-[rgba(255,255,255,0.5)] w-40 h-18 left-20 bottom-5  pt-2 pb-4 rounded-2xl'>
-                      <div className='w-12 h-12 bg-red-500 rounded-full'></div>
-                      <div className='w-12 h-12 bg-red-500 rounded-full'></div>
+                    <div className='relative flex justify-center items-center gap-2 bg-[rgba(255,255,255,0.5)]  left-12 px-3 py-1 rounded-2xl'>
+                      <button
+                        onClick={() => {
+                          handleShareToKakao();
+                        }}
+                        className='w-8 h-8 rounded-full'
+                      >
+                        <Image src={kakaoIcon} alt='카카오 공유하기' />
+                      </button>
+                      <button
+                        onClick={() => {
+                          copyURL();
+                        }}
+                        className='flex justify-center items-center w-8 h-8 bg-white border-b rounded-full p-1'
+                      >
+                        <Image src={LinkShareIcon} alt='링크 복사하기' width={20} height={20} />
+                      </button>
                     </div>
                   </PopoverContent>
                 </Popover>

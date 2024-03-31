@@ -2,6 +2,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 import Navbar from '../components/navigaition/Navbar';
 import RecoilRootWrap from '@/util/RecoilRootWrap';
+import Script from 'next/script';
+import KakaoScript from '@/script/KakaoScript';
 
 export const metadata: Metadata = {
   title: '가고팝',
@@ -14,6 +16,7 @@ export const metadata: Metadata = {
 declare global {
   interface Window {
     Tmapv2: any;
+    Kakao: any;
   }
 }
 
@@ -30,6 +33,7 @@ export default async function RootLayout({
           <Navbar />
         </RecoilRootWrap>
       </body>
+      <KakaoScript />
     </html>
   );
 }
