@@ -4,15 +4,25 @@ import PopupCard from '@/components/card/PopupCardWithWish';
 import Map from '@/components/map/Map';
 import SearchBar from '@/components/searchbar/SearchBar';
 import BottomSlide from '@/components/slide/BottomSlide';
-import { destinationState } from '@/store/search';
+import { destinationState, splashState } from '@/store/store';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { api, apiCred } from '@/api';
 import { PopupTypewithWish } from '../types/types';
+import Splash from '@/components/splash/Splash';
 export default function Home() {
   const [searchStyle, setSearchStyle] = useState('circle');
   const [popupList, setPopupList] = useState<PopupTypewithWish[]>([]);
   const [destination, setDestinationState] = useRecoilState(destinationState);
+  const [splash, setSplashState] = useRecoilState(splashState);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSplashState(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (destination.length > 1) {
@@ -35,6 +45,7 @@ export default function Home() {
 
   return (
     <div>
+      <Splash splash={splash} />
       <SearchBar searchBarStyle={searchStyle} />
       <Map />
       <BottomSlide
