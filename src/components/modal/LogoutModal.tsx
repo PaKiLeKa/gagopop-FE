@@ -12,8 +12,23 @@ import {
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import LogoutLogo from '../../../public/images/logoutLogo.png';
+import { apiCred } from '@/api';
+import { useRouter } from 'next/navigation';
 
 export default function LogoutModal() {
+  const router = useRouter();
+
+  const handleLogOutButton = () => {
+    apiCred
+      .get('/api/logout')
+      .then((res) => setCookie('islogin', 'false'))
+      .catch((error) => console.log(error));
+  };
+
+  function setCookie(name: string, value: string) {
+    document.cookie = name + '=' + (value || '');
+  }
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -33,7 +48,13 @@ export default function LogoutModal() {
             취소
           </AlertDialogCancel>
           <div className='w-px h-3/5 bg-gray-300'></div>
-          <AlertDialogAction className='w-1/2 mt-2 bg-white text-black hover:bg-white'>
+          <AlertDialogAction
+            onClick={() => {
+              handleLogOutButton();
+              router.push('/login');
+            }}
+            className='w-1/2 mt-2 bg-white text-black hover:bg-white'
+          >
             확인
           </AlertDialogAction>
         </AlertDialogFooter>
