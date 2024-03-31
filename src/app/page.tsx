@@ -15,7 +15,7 @@ export default function Home() {
   const [destination, setDestinationState] = useRecoilState(destinationState);
 
   useEffect(() => {
-    if (destination.length !== 0) {
+    if (destination.length > 1) {
       setSearchStyle('bar');
     } else {
       setSearchStyle('circle');
@@ -23,7 +23,7 @@ export default function Home() {
   }, [destination]);
 
   useEffect(() => {
-    api
+    apiCred
       .get('/popup/find-all')
       .then((res) => {
         setPopupList(res.data);

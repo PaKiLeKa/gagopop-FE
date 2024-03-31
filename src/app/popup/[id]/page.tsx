@@ -16,18 +16,20 @@ import IntroIcon from '../../../../public/icons/detail/intro.svg';
 import { useRecoilState } from 'recoil';
 import { destinationState } from '@/store/search';
 import Badge from '@/components/badge/Badge';
-import { api } from '@/api';
+import { api, apiCred } from '@/api';
 import { useEffect, useState } from 'react';
 import { PopupType, PopupTypewithWish } from '@/types/types';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import usePeriod from '@/hooks/usePeriod';
+import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
 
 export default function PopUpDetail() {
   const [destination, setDestinationState] = useRecoilState(destinationState);
   const [popup, setPopup] = useState<PopupTypewithWish>();
   const pathname = usePathname();
+  const router = useRouter();
   const { periodState, diffDay } = usePeriod(popup?.popupStore!);
-
+  const [enlarge, setEnlarge] = useState<boolean>(false);
   const handleDestinationBtn = () => {
     const filteredPopups = popup ? [popup.popupStore] : [];
 
@@ -35,8 +37,24 @@ export default function PopUpDetail() {
   };
   const searchParams = pathname.split('/')[2];
 
+  const handdleAddWishButton = () => {
+    apiCred
+      .get(`/user/wishlist/add?pid=${popup?.popupStore.id}`)
+      .then((res) => console.log(res))
+      .catch((error) => console.log(error));
+  };
+
+  const handdleDeleteWishButton = () => {
+    apiCred
+      .get(`/user/wishlist/delete?pid=${popup?.popupStore.id}`)
+      .then((res) => console.log(res))
+      .catch((error) => console.log(error));
+  };
+  const handleEnlargeButton = () => {
+    setEnlarge(!enlarge);
+  };
   useEffect(() => {
-    api
+    apiCred
       .get('/popup/find-all')
       .then((res) =>
         res.data.find(
@@ -58,19 +76,46 @@ export default function PopUpDetail() {
             src={popup ? popup?.popupStore?.imageUrl : ''}
             alt='팝업 스토어 이미지'
             fill
-            className='brightness-75'
+            objectFit={enlarge ? 'contain' : 'none'}
+            className='brightness-75 bg-slate-100'
           />
           <div className='absolute'>
             <div className='flex flex-col justify-between w-[360px] aspect-square p-4'>
               <div className='flex flex-col gap-2'>
                 {popup?.inWishlist ? (
-                  <HeartIcon width='40' height='40' viewBox='0 0 20 20' />
+                  <button className='w-10 h-10'>
+                    <HeartIcon
+                      onClick={() => {
+                        router.refresh();
+                        handdleDeleteWishButton();
+                      }}
+                      width='40'
+                      height='40'
+                      viewBox='4 5 40 30'
+                    />
+                    /
+                  </button>
                 ) : (
-                  <EmptyHeartIcon width='40' height='40' viewBox='0 0 20 20' />
+                  <button
+                    onClick={() => {
+                      handdleAddWishButton();
+                    }}
+                    className='w-10 h-10'
+                  >
+                    <EmptyHeartIcon width='40' height='40' viewBox='0 0 20 20' />
+                  </button>
                 )}
-                <EmptyHeartIcon width='40' height='40' viewBox='0 0 20 20' />
                 <TogoIcon />
                 <ShareIcon />
+                <Popover>
+                  <PopoverTrigger className='relative bottom-12  w-10 h-10 bg-transparent hover:brightness-50'></PopoverTrigger>
+                  <PopoverContent>
+                    <div className='relative flex justify-center items-center gap-4 bg-[rgba(255,255,255,0.5)] w-40 h-18 left-20 bottom-5  pt-2 pb-4 rounded-2xl'>
+                      <div className='w-12 h-12 bg-red-500 rounded-full'></div>
+                      <div className='w-12 h-12 bg-red-500 rounded-full'></div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
               <div className='flex justify-between items-end text-white'>
                 <div>
@@ -82,7 +127,14 @@ export default function PopUpDetail() {
                     .substring(0, 10)}`}</p>
                   <p className='text-2xl font-bold'>{popup?.popupStore.name}</p>
                 </div>
-                <GrowIcon />
+                <button
+                  className='bg-500-blue w-10 h-10 bg-transparent hover:brightness-50'
+                  onClick={() => {
+                    handleEnlargeButton();
+                  }}
+                >
+                  <GrowIcon />
+                </button>
               </div>
             </div>
           </div>

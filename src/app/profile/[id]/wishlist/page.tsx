@@ -2,12 +2,46 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PopupCard from '@/components/card/PopupCard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { apiCred } from '@/api';
+import { PopupType, WishData } from '@/types/types';
 
 export default function Wishlist() {
   const [activeTab, setActiveTab] = useState<string>('open');
+  const [wishList, setWishList] = useState<WishData>();
   const router = useRouter();
+
+  const calPeriod = (popup: PopupType) => {
+    const today = new Date().getTime();
+    const startDate = new Date(popup?.startDate).getTime();
+    const endDate = new Date(popup?.endDate).getTime();
+    let periodState;
+    let diffDay = 0;
+
+    if ((startDate <= today && today <= endDate) || (startDate <= today && startDate === endDate)) {
+      periodState = 'open';
+      if (Math.floor((endDate - today) / (1000 * 60 * 60 * 24)) < 8) {
+        periodState = 'endsoon';
+        diffDay = Math.floor((endDate - today) / (1000 * 60 * 60 * 24));
+      }
+    } else {
+      if (Math.floor((today - endDate) / (1000 * 60 * 60 * 24)) > 0) {
+        periodState = 'end';
+      } else {
+        periodState = 'opensoon';
+        diffDay = Math.floor((startDate - today) / (1000 * 60 * 60 * 24));
+      }
+    }
+    return { periodState, diffDay };
+  };
+  console.log(wishList);
+  useEffect(() => {
+    apiCred
+      .get('/user/wishlist')
+      .then((res) => setWishList(res.data))
+      .catch((error) => console.log(error));
+  }, []);
 
   return (
     <div className='h-[100vh]'>
@@ -70,16 +104,10 @@ export default function Wishlist() {
         <TabsContent value='open'>
           <div className='h-full mt-4 pb-44 overflow-auto'>
             <PopupCard icon='togo' />
-            <PopupCard icon='togo' />
           </div>
         </TabsContent>
         <TabsContent value='openyet'>
-          <div className='h-full mt-4 pb-44 overflow-auto'>
-            <PopupCard icon='togo' />
-            <PopupCard icon='togo' />
-            <PopupCard icon='togo' />
-            <PopupCard icon='togo' />
-          </div>
+          <div className='h-full mt-4 pb-44 overflow-auto'></div>
         </TabsContent>
         <TabsContent value='end'>
           <div className='flex items-center h-[42px] pl-3 -mt-2 -mb-3 text-xs bg-gray-200 text-gray-500'>
