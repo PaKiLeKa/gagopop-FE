@@ -6,7 +6,7 @@ import EmptyHeart from '../../../public/icons/emptyheart.svg';
 import Togo from '../../../public/icons/togo.svg';
 import DestinationIcon from '../../../public/icons/marker/destination_s.svg';
 import { useRecoilState } from 'recoil';
-import { destinationState } from '@/store/search';
+import { destinationState } from '@/store/store';
 import Badge from '../badge/Badge';
 import { PopupType, PopupTypewithWish } from '@/types/types';
 import Test from '../../../public/images/dummy.png';

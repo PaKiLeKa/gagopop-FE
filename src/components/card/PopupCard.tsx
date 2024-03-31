@@ -5,7 +5,7 @@ import Heart from '../../../public/icons/heart.svg';
 import EmptyHeart from '../../../public/icons/emptyheart.svg';
 import DestinationIcon from '../../../public/icons/marker/destination_s.svg';
 import { useRecoilState } from 'recoil';
-import { destinationState } from '@/store/search';
+import { destinationState } from '@/store/store';
 import Badge from '../badge/Badge';
 import { PopupType, PopupTypewithTogo, PopupTypewithWish } from '@/types/types';
 import { useRouter } from 'next/navigation';

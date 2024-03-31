@@ -5,7 +5,7 @@ import DatePicker from '../datepicker/DatePicker';
 import Link from 'next/link';
 import GlassIcon from '../../../public/icons/glass.svg';
 import { useRecoilState } from 'recoil';
-import { dateState, destinationState } from '@/store/search';
+import { dateState, destinationState } from '@/store/store';
 import DestinationIcon from '../../../public/icons/marker/destination_s.svg';
 import StartIcon from '../../../public/icons/marker/start.svg';
 import { Suspense, useState } from 'react';

@@ -16,7 +16,7 @@ import IntroIcon from '../../../../public/icons/detail/intro.svg';
 import kakaoIcon from '../../../../public/icons/share/kakaoIcon.png';
 import LinkShareIcon from '../../../../public/icons/share/linkshare.png';
 import { useRecoilState } from 'recoil';
-import { destinationState } from '@/store/search';
+import { destinationState } from '@/store/store';
 import Badge from '@/components/badge/Badge';
 import { api, apiCred } from '@/api';
 import { useEffect, useState } from 'react';

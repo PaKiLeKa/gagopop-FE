@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import CalandarIcon from '../../../public/icons/calandar.svg';
-import { dateState } from '@/store/search';
+import { dateState } from '@/store/store';
 import { useRecoilState } from 'recoil';
 import { SelectSingleEventHandler } from 'react-day-picker';
 
