@@ -18,6 +18,10 @@ export interface PopupTypewithWish {
   inWishlist: boolean;
   popupStore: PopupType;
 }
+export interface PopupTypewithTogo {
+  inTogo: boolean;
+  popupStore: PopupType;
+}
 
 export interface currentMapType {
   setCenter: (arg0: any) => void;

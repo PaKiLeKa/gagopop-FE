@@ -8,7 +8,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function PopUpList() {
-  const [list, setList] = useState<PopupList>([]);
+  const [list, setList] = useState<PopupList | undefined>(undefined);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -19,7 +19,7 @@ export default function PopUpList() {
       .get('/popup/info')
       .then((res) => Object.entries(res.data))
       .then((res) => res.find(([key, _]) => key == pathname.split('/')[3]))
-      .then((res) => setList(res))
+      .then((res) => setList(res as PopupList | undefined))
       .catch((e) => console.log(e));
   }, []);
 
@@ -32,20 +32,22 @@ export default function PopUpList() {
         >
           <div className='text-2xl'>←</div>
         </button>
-        <span className='text-xl'>🔥 {list[0]}</span>
+        {list && <span className='text-xl'>🔥 {list[0]}</span>}
       </div>
-      <div className='flex text-sm m-2 -mb-2 text-gray-500'>
-        <p className='font-bold text-black ml-1'>{list[1]?.length}개</p>의 팝업스토어가 있습니다.
-      </div>
+      {list && (
+        <div className='flex text-sm m-2 -mb-2 text-gray-500'>
+          <p className='font-bold text-black ml-1'>{list[1]?.length}개</p>의 팝업스토어가 있습니다.
+        </div>
+      )}
       <div className='h-full mt-4 pb-44 overflow-auto'>
-        {list[1]?.map((popup: PopupType) => (
-          <PopupCard
-            key={popup.id}
-            icon='heart'
-            info={popup}
-            period={['open', 'opensoon', 'end', 'endsoon']}
-          />
-        ))}
+        {list &&
+          list[1]?.map((popup: PopupType) => (
+            <PopupCard
+              key={popup.id}
+              info={popup}
+              period={['open', 'opensoon', 'end', 'endsoon']}
+            />
+          ))}
       </div>
     </div>
   );

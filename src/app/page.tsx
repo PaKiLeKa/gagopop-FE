@@ -1,6 +1,6 @@
 'use client';
 
-import PopupCard from '@/components/card/PopupCard';
+import PopupCard from '@/components/card/PopupCardWithWish';
 import Map from '@/components/map/Map';
 import SearchBar from '@/components/searchbar/SearchBar';
 import BottomSlide from '@/components/slide/BottomSlide';
@@ -44,7 +44,6 @@ export default function Home() {
               {popupList?.map((popup) => (
                 <PopupCard
                   key={popup.popupStore.id}
-                  icon={popup.inWishlist === true ? 'heart' : 'emptyheart'}
                   info={popup}
                   period={['open', 'opensoon', 'endsoon']}
                 />

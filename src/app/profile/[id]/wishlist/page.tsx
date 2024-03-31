@@ -1,15 +1,15 @@
 'use client';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import PopupCard from '@/components/card/PopupCard';
+import PopupCardWithTogo from '@/components/card/PopupCardWithTogo';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiCred } from '@/api';
-import { PopupType, WishData } from '@/types/types';
+import { PopupType, PopupTypewithTogo, WishData } from '@/types/types';
 
 export default function Wishlist() {
   const [activeTab, setActiveTab] = useState<string>('open');
-  const [wishList, setWishList] = useState<WishData>();
+  const [wishList, setWishList] = useState<PopupTypewithTogo[]>();
   const router = useRouter();
 
   const calPeriod = (popup: PopupType) => {
@@ -103,11 +103,38 @@ export default function Wishlist() {
         </TabsList>
         <TabsContent value='open'>
           <div className='h-full mt-4 pb-44 overflow-auto'>
-            <PopupCard icon='togo' />
+            {wishList?.map((popup: PopupTypewithTogo) =>
+              calPeriod(popup.popupStore).periodState === 'open' ? (
+                <PopupCardWithTogo
+                  key={popup.popupStore.id}
+                  info={popup}
+                  period={[calPeriod(popup.popupStore).periodState]}
+                />
+              ) : null,
+            )}
+            {wishList?.map((popup: PopupTypewithTogo) =>
+              calPeriod(popup.popupStore).periodState === 'endsoon' ? (
+                <PopupCardWithTogo
+                  key={popup.popupStore.id}
+                  info={popup}
+                  period={[calPeriod(popup.popupStore).periodState]}
+                />
+              ) : null,
+            )}
           </div>
         </TabsContent>
         <TabsContent value='openyet'>
-          <div className='h-full mt-4 pb-44 overflow-auto'></div>
+          <div className='h-full mt-4 pb-44 overflow-auto'>
+            {wishList?.map((popup: PopupTypewithTogo) =>
+              calPeriod(popup.popupStore).periodState === 'opensoon' ? (
+                <PopupCardWithTogo
+                  key={popup.popupStore.id}
+                  info={popup}
+                  period={[calPeriod(popup.popupStore).periodState]}
+                />
+              ) : null,
+            )}
+          </div>
         </TabsContent>
         <TabsContent value='end'>
           <div className='flex items-center h-[42px] pl-3 -mt-2 -mb-3 text-xs bg-gray-200 text-gray-500'>
@@ -115,7 +142,15 @@ export default function Wishlist() {
             자동으로 사라집니다.
           </div>
           <div className='h-full mt-4 pb-44 overflow-auto opacity-50'>
-            <PopupCard icon='togo' />
+            {wishList?.map((popup: PopupTypewithTogo) =>
+              calPeriod(popup.popupStore).periodState === 'end' ? (
+                <PopupCardWithTogo
+                  key={popup.popupStore.id}
+                  info={popup}
+                  period={[calPeriod(popup.popupStore).periodState]}
+                />
+              ) : null,
+            )}
           </div>
         </TabsContent>
       </Tabs>
