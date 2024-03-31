@@ -7,10 +7,12 @@ import RightArr from '../../../public/icons/rightarrow.svg';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { PopupCategoryList, PopupType } from '@/types/types';
 
-export default function HorizonScroll({ list }: { list: any }) {
+export default function HorizonScroll({ list }: { list: [string, PopupType[]] }) {
   const router = useRouter();
-  
+
+  console.log(list);
   return (
     <>
       <div className='flex justify-between w-full px-3'>

@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil';
 import { dateState, destinationState } from '@/store/search';
 import DestinationIcon from '../../../public/icons/marker/destination_s.svg';
 import StartIcon from '../../../public/icons/marker/start.svg';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }) {
@@ -24,7 +24,7 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
   };
 
   return (
-    <>
+    <Suspense>
       {/* 홈 페이지 */}
       {searchBarStyle === 'circle' ? (
         <div className='flex justify-center items-center w-full h-14 p-2 border border-b-black'>
@@ -151,6 +151,6 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
           </div>
         </div>
       )}
-    </>
+    </Suspense>
   );
 }

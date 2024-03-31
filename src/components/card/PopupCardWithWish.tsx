@@ -13,8 +13,10 @@ import Test from '../../../public/images/dummy.png';
 import { useRouter } from 'next/navigation';
 import usePeriod from '@/hooks/usePeriod';
 import { api, apiCred } from '@/api';
+import { useEffect, useState } from 'react';
 
 export default function PopupCard({ info, period }: { info: PopupTypewithWish; period: string[] }) {
+  const [wish, setWish] = useState<boolean>(info.inWishlist);
   const [destination, setDestinationState] = useRecoilState(destinationState);
   const router = useRouter();
   const handleDestinationBtn = () => {
@@ -22,19 +24,31 @@ export default function PopupCard({ info, period }: { info: PopupTypewithWish; p
   };
   const { periodState, diffDay } = usePeriod(info?.popupStore);
 
-  const handdleWishButton = () => {
+  const handleWishButton = () => {
     apiCred
       .get(`/user/wishlist/add?pid=${info.popupStore.id}`)
-      .then((res) => console.log(res))
+      .then((res) => {
+        setWish(!wish);
+        console.log(res);
+      })
       .catch((error) => console.log(error));
   };
 
-  const handdleDeleteWishButton = () => {
+  const handleDeleteWishButton = () => {
     apiCred
       .get(`/user/wishlist/delete?pid=${info?.popupStore.id}`)
-      .then((res) => console.log(res))
+      .then((res) => {
+        setWish(!wish);
+        console.log(res);
+      })
       .catch((error) => console.log(error));
   };
+
+  useEffect(() => {
+    if (info) {
+      setWish(info?.inWishlist);
+    }
+  }, [info]);
 
   return (
     <div
@@ -54,11 +68,11 @@ export default function PopupCard({ info, period }: { info: PopupTypewithWish; p
         />
         <div
           onClick={() => {
-            info.inWishlist ? handdleDeleteWishButton() : handdleWishButton();
+            wish ? handleDeleteWishButton() : handleWishButton();
           }}
           className='absolute top-1 left-1 cursor-pointer'
         >
-          {info?.inWishlist ? <Heart width='20' height='20' viewBox='4 0 40 40' /> : <EmptyHeart />}
+          {wish ? <Heart width='20' height='20' viewBox='4 0 40 40' /> : <EmptyHeart />}
         </div>
       </div>
       <div className='flex flex-col justify-between w-2/3 ml-2 '>

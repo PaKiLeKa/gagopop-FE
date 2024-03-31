@@ -35,7 +35,7 @@ export default function Wishlist() {
     }
     return { periodState, diffDay };
   };
-  console.log(wishList);
+  
   useEffect(() => {
     apiCred
       .get('/user/wishlist')

@@ -22,14 +22,14 @@ export default function PopupCard({ info, period }: { info: PopupType; period: s
   };
   const { periodState, diffDay } = usePeriod(info);
 
-  const handdleWishButton = () => {
+  const handleWishButton = () => {
     apiCred
       .get(`/user/wishlist/add?pid=${info.id}`)
       .then((res) => console.log(res))
       .catch((error) => console.log(error));
   };
 
-  const handdleDeleteWishButton = () => {
+  const handleDeleteWishButton = () => {
     apiCred
       .get(`/user/wishlist/delete?pid=${info?.id}`)
       .then((res) => console.log(res))
@@ -62,8 +62,8 @@ export default function PopupCard({ info, period }: { info: PopupType; period: s
         <div
           onClick={() => {
             wishList?.find((item) => item.popupStore && item.popupStore.id === info.id)
-              ? handdleDeleteWishButton()
-              : handdleWishButton();
+              ? handleDeleteWishButton()
+              : handleWishButton();
           }}
           className='absolute top-1 left-1 cursor-pointer'
         >

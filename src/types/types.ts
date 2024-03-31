@@ -29,9 +29,13 @@ export interface currentMapType {
 }
 
 export type WishData = {
-  popupStore: PopupType;
+  popupStore: PopupType[];
   inTogo: boolean;
 };
+
+export interface PopupCategoryList {
+  [index: string]: PopupType[];
+}
 
 export interface User {
   email: string;

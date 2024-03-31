@@ -30,29 +30,39 @@ export default function PopUpDetail() {
   const router = useRouter();
   const { periodState, diffDay } = usePeriod(popup?.popupStore!);
   const [enlarge, setEnlarge] = useState<boolean>(false);
+  const [wish, setWish] = useState<boolean>();
+  const searchParams = pathname.split('/')[2];
+
   const handleDestinationBtn = () => {
     const filteredPopups = popup ? [popup.popupStore] : [];
 
     setDestinationState([...destination, ...filteredPopups]);
   };
-  const searchParams = pathname.split('/')[2];
 
   const handdleAddWishButton = () => {
     apiCred
       .get(`/user/wishlist/add?pid=${popup?.popupStore.id}`)
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res);
+        setWish(!wish);
+      })
       .catch((error) => console.log(error));
   };
 
   const handdleDeleteWishButton = () => {
     apiCred
       .get(`/user/wishlist/delete?pid=${popup?.popupStore.id}`)
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res);
+        setWish(!wish);
+      })
       .catch((error) => console.log(error));
   };
+
   const handleEnlargeButton = () => {
     setEnlarge(!enlarge);
   };
+
   useEffect(() => {
     apiCred
       .get('/popup/find-all')
@@ -61,11 +71,19 @@ export default function PopUpDetail() {
           (item: { popupStore: { id: number } }) => item.popupStore.id == parseInt(searchParams),
         ),
       )
-      .then((res) => setPopup(res))
+      .then((res) => {
+        setPopup(res);
+      })
       .catch(() => {
         console.log('error');
       });
   }, []);
+
+  useEffect(() => {
+    if (popup) {
+      setWish(popup?.inWishlist);
+    }
+  }, [popup]);
 
   return (
     <div className='h-full pb-[104px]'>
@@ -82,11 +100,10 @@ export default function PopUpDetail() {
           <div className='absolute'>
             <div className='flex flex-col justify-between w-[360px] aspect-square p-4'>
               <div className='flex flex-col gap-2'>
-                {popup?.inWishlist ? (
+                {wish ? (
                   <button className='w-10 h-10'>
                     <HeartIcon
                       onClick={() => {
-                        router.refresh();
                         handdleDeleteWishButton();
                       }}
                       width='40'

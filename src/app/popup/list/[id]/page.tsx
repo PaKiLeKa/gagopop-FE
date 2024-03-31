@@ -1,6 +1,6 @@
 'use client';
 
-import { api } from '@/api';
+import { api, apiCred } from '@/api';
 import PopupCard from '@/components/card/PopupCard';
 import { PopupType } from '@/types/types';
 import Link from 'next/link';
@@ -8,18 +8,22 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function PopUpList() {
-  const [list, setList] = useState<PopupList | undefined>(undefined);
+  const [list, setList] = useState<PopupList>();
   const pathname = usePathname();
   const router = useRouter();
 
   type PopupList = [string, PopupType[]];
 
   useEffect(() => {
-    api
+    apiCred
       .get('/popup/info')
       .then((res) => Object.entries(res.data))
-      .then((res) => res.find(([key, _]) => key == pathname.split('/')[3]))
-      .then((res) => setList(res as PopupList | undefined))
+      .then((res) => {
+        console.log(res);
+        console.log(res.find(([key, _]) => key == decodeURIComponent(pathname).split('/')[3]));
+        const filtered = res.find(([key, _]) => key == decodeURIComponent(pathname).split('/')[3]);
+        setList(filtered as PopupList);
+      })
       .catch((e) => console.log(e));
   }, []);
 
@@ -32,7 +36,7 @@ export default function PopUpList() {
         >
           <div className='text-2xl'>←</div>
         </button>
-        {list && <span className='text-xl'>🔥 {list[0]}</span>}
+        {list && <span className='text-lg'>🔥 {list[0]}</span>}
       </div>
       {list && (
         <div className='flex text-sm m-2 -mb-2 text-gray-500'>
