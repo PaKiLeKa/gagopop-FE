@@ -24,6 +24,11 @@ export interface currentMapType {
   setZoom: (arg0: number) => void;
 }
 
+export type WishData = {
+  popupStore: PopupType;
+  inTogo: boolean;
+};
+
 export interface User {
   email: string;
   nickname: null;

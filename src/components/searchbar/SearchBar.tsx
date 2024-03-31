@@ -22,21 +22,23 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
   const handleBack = () => {
     router.back();
   };
-  
+
   return (
     <>
+      {/* 홈 페이지 */}
       {searchBarStyle === 'circle' ? (
         <div className='flex justify-center items-center w-full h-14 p-2 border border-b-black'>
           <div className='flex items-center gap-1 w-full px-1'>
             <DatePicker searchBarStyle={searchBarStyle} />
             <Input
               placeholder='지역, 팝업스토어명 키워드로 찾아보세요.'
-              className='rounded-full pr-16'
+              className='rounded-full pr-18'
               onChange={(e) => {
                 setSearch(e.target.value);
               }}
             />
             <Link
+              className='flex justify-center items-center absolute right-5  border-l-2 pl-1 w-8 h-6'
               href={{
                 pathname: '/search',
                 query: {
@@ -54,15 +56,16 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
             </Link>
           </div>
         </div>
-      ) : searchBarStyle === 'bar' ? (
-        <div>
+      ) : // 홈 페이지 목적지 검색 리스트
+      searchBarStyle === 'bar' ? (
+        <div className='bg-red-500'>
           <DatePicker searchBarStyle={searchBarStyle} />
           <div className='flex flex-col gap-1 p-3'>
             <div className='flex justify-center items-center gap-1'>
               <div>
                 <StartIcon />
               </div>
-              <Input value={destination[0]?.name} readOnly className='rounded-full pr-16 text-sm' />
+              <Input defaultValue='출발지를 선택하세요' className='rounded-full pr-16 text-sm' />
             </div>
             {destination?.slice(1).map((v, i) => {
               return (
@@ -83,7 +86,8 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
                 </div>
               );
             })}
-            <div className='flex gap-1 '>
+            {/* 목적지 하위 검색탭 */}
+            <div className='flex gap-1 bg-blue-500'>
               <div className='flex justify-center items-center ml-1 mr-1 w-10 h-10'>
                 <DestinationIcon />
               </div>
@@ -104,10 +108,11 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
               취소
             </button>
             <p className='text-xl text-gray-200'>│</p>
-            <button className='font-light px-16 py-3'>확인(gone)</button>
+            <button className='font-light px-16 py-3'>확인</button>
           </div>
         </div>
       ) : (
+        // search, detail 페이지
         <div className='flex justify-center w-full h-14 px-1 py-2'>
           <div className='flex justify-center items-center relative w-[95%]'>
             <button
@@ -118,11 +123,31 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
             >
               <div className='text-2xl'>←</div>
             </button>
-            <Input value={searchKey} className='rounded-full pr-20 font-light text-green-500' />
+            <Input
+              defaultValue={searchKey != null ? searchKey : ''}
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
+              className='rounded-full pr-32 font-light text-green-500'
+            />
             <DatePicker searchBarStyle={searchBarStyle} />
-            <button className='absolute right-3 top-2 pl-2 h-6 border-gray-300 border-l'>
+            <Link
+              className='absolute right-3 top-[9px] pt-[2px] pl-2 h-6 border-gray-300 border-l'
+              href={{
+                pathname: '/search',
+                query: {
+                  search: search,
+                  date:
+                    date.getFullYear() +
+                    '-' +
+                    (date.getMonth() + 1 < 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) +
+                    '-' +
+                    (date.getDate() < 9 ? '0' + date.getDate() : date.getDate()),
+                },
+              }}
+            >
               <GlassIcon />
-            </button>
+            </Link>
           </div>
         </div>
       )}
