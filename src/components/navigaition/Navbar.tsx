@@ -13,10 +13,12 @@ import PopupHover from '../../../public/icons/navbar/popup_h.png';
 import WishHover from '../../../public/icons/navbar/wish_h.png';
 import ProfileHover from '../../../public/icons/navbar/profile_h.png';
 import { apiCred } from '@/api';
+import { useRecoilState } from 'recoil';
+import { loginState } from '@/store/store';
 
 export default function Navbar() {
-  const [isLogin, setIsLogIn] = useState<string>('false');
   const [userEmail, setUserEmail] = useState<string>('');
+  const [login, setloginState] = useRecoilState(loginState);
   const pathname = usePathname();
   const initailPathName = pathname?.split('/')[1];
   const wishPathName = pathname?.split('/')[3];
@@ -31,29 +33,6 @@ export default function Navbar() {
         console.log(error);
       });
   }, []);
-
-  function getCookie(name: string) {
-    var nameEQ = name + '=';
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1, c.length);
-      }
-      if (c.indexOf(nameEQ) == 0) {
-        return c.substring(nameEQ.length, c.length);
-      }
-    }
-    return null;
-  }
-  useEffect(() => {
-    const isLoginCookie = getCookie('islogin');
-    if (isLoginCookie !== null) setIsLogIn(isLoginCookie);
-    else {
-      setIsLogIn('false');
-    }
-  }, []);
-  console.log(isLogin);
 
   return (
     <div className='absolute bottom-0 flex just items-center w-full h-16 p-4 bg-white border-t border-black z-20 shadow-[0_-10px_10px_-10px_rgba(0,0,0,0.4)]'>
@@ -74,7 +53,7 @@ export default function Navbar() {
         ) : null}
       </Link>
       <Link
-        href={'/profile/' + userEmail + '/wishlist'}
+        href={login ? '/profile/' + userEmail + '/wishlist' : '/login'}
         className='flex flex-col justify-center items-center w-[84px] group'
       >
         <Image src={WishIcon} alt='위시리스트으로 이동' className='group-hover:hidden' />
@@ -84,7 +63,7 @@ export default function Navbar() {
           <div className='absolute top-0 bg-black w-[80px] h-1 rounded-[0_0_80px_80px]'></div>
         ) : null}
       </Link>
-      {isLogin === 'true' ? (
+      {login ? (
         <Link
           href={'/profile/' + userEmail}
           className='flex flex-col justify-center items-center w-[84px] group'
@@ -101,7 +80,7 @@ export default function Navbar() {
         <Link href={'/login'} className='flex flex-col justify-center items-center w-[84px] group'>
           <Image src={ProfileIcon} alt='프로필로 이동' className='group-hover:hidden' />
           <Image src={ProfileHover} alt='프로필로 이동' className='hidden group-hover:block' />
-          <p className='text-xs text-gray-400 group-hover:text-black'>로그인</p>
+          <p className='text-xs text-gray-400 group-hover:text-black'>내정보</p>
           {initailPathName === 'profile' || initailPathName === 'cs-center' ? (
             <div className='absolute top-0 bg-black w-[80px] h-1 rounded-[0_0_80px_80px]'></div>
           ) : null}

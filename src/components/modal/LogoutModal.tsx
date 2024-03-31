@@ -1,3 +1,5 @@
+'use client';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,20 +16,21 @@ import Image from 'next/image';
 import LogoutLogo from '../../../public/images/logoutLogo.png';
 import { apiCred } from '@/api';
 import { useRouter } from 'next/navigation';
+import { useRecoilState } from 'recoil';
+import { loginState } from '@/store/store';
 
 export default function LogoutModal() {
+  const [login, setloginState] = useRecoilState(loginState);
   const router = useRouter();
 
   const handleLogOutButton = () => {
     apiCred
       .get('/api/logout')
-      .then((res) => setCookie('islogin', 'false'))
+      .then((res) => {
+        console.log(res);
+      })
       .catch((error) => console.log(error));
   };
-
-  function setCookie(name: string, value: string) {
-    document.cookie = name + '=' + (value || '');
-  }
 
   return (
     <AlertDialog>
@@ -50,6 +53,7 @@ export default function LogoutModal() {
           <div className='w-px h-3/5 bg-gray-300'></div>
           <AlertDialogAction
             onClick={() => {
+              setloginState(false);
               handleLogOutButton();
               router.push('/login');
             }}

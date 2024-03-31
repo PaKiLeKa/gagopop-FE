@@ -7,23 +7,16 @@ import HeartIcon from '../../../public/icons/marker/wishpin.svg';
 import GoogleIcon from '../../../public/icons/google.svg';
 import Logo from '../../../public/images/logo.png';
 import { useRouter } from 'next/navigation';
+import { loginState } from '@/store/store';
+import { useRecoilState } from 'recoil';
 
 export default function Login() {
+  const [login, setloginState] = useRecoilState(loginState);
   const router = useRouter();
   const handleLogin = () => {
-    setCookie('islogin', 'true', 60 * 60 * 60 * 60);
+    setloginState(true);
     router.push('https://gagopop.kro.kr/oauth2/authorization/google');
   };
-
-  function setCookie(name: string, value: string, milliseconds: number) {
-    let expires = '';
-    if (milliseconds) {
-      var date = new Date();
-      date.setTime(date.getTime() + milliseconds);
-      expires = '; expires=' + date.toUTCString();
-    }
-    document.cookie = name + '=' + (value || '') + expires + '; path=/';
-  }
 
   return (
     <div className='flex justify-center items-center h-[90vh]'>
