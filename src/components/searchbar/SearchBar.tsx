@@ -117,14 +117,36 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
                 />
               </div>
             ) : (
-              <div className='flex gap-1'>
+              <div className='flex gap-1 relative'>
                 <div className='flex justify-center items-center ml-1 mr-1 w-10 h-10'>
                   <DestinationIcon />
                 </div>
                 <Input
                   placeholder='지역, 팝업스토어 명 키워드로 찾아보세요.'
                   className='rounded-full pr-10 text-sm w-full'
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                  }}
                 />
+                <Link
+                  className='flex justify-center items-center absolute top-2 right-[5px] border-l pl-3 w-10 h-6'
+                  href={{
+                    pathname: '/search',
+                    query: {
+                      search: search,
+                      date:
+                        date.getFullYear() +
+                        '-' +
+                        (date.getMonth() + 1 < 9
+                          ? '0' + (date.getMonth() + 1)
+                          : date.getMonth() + 1) +
+                        '-' +
+                        (date.getDate() < 9 ? '0' + date.getDate() : date.getDate()),
+                    },
+                  }}
+                >
+                  <GlassIcon width='30' height='30' viewBox='0 -3 25 25' />
+                </Link>
               </div>
             )}
           </div>
@@ -139,7 +161,7 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
               취소
             </button>
             <p className='text-xl text-gray-200'>│</p>
-            <button className='font-light px-16 py-3'>확인</button>
+            <div className='font-light px-20 py-3'></div>
           </div>
         </div>
       ) : (

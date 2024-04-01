@@ -15,7 +15,6 @@ export default function Map() {
   const [src, setSrc] = useState<string>();
   const [currentMap, setCurrentMap] = useState<currentMapType>();
   const [currentXY, setCurrentXY] = useState<number[]>([]);
-  const [loading, setLoading] = useState<Boolean>(true);
   const [destination, setDestinationState] = useRecoilState(destinationState);
   const [destinationXY, setDestinationXY] = useState<string>('');
   const [clickedPosition, setClickedPosition] = useState<string[]>();
@@ -28,9 +27,6 @@ export default function Map() {
     setCenter: (arg0: any) => void;
     setZoom: (arg0: number) => void;
   }
-  // console.log('=====================================================');
-  // console.log(destination, 'destination');
-  // console.log(destinationXY, 'destinationXY');
 
   // 경로 저장
   useEffect(() => {
@@ -97,7 +93,6 @@ export default function Map() {
         setCurrentXY([lat, lon]);
       });
     }
-    setLoading(false);
   };
 
   // 현재 위치 버튼
@@ -328,14 +323,16 @@ export default function Map() {
           </div>
           <p className='text-xs'>내위치</p>
         </button>
-        <button
-          className='absolute top-40 left-10 z-10'
-          onClick={() => {
-            handleFindPath();
-          }}
-        >
-          경로탐색
-        </button>
+        {destination.length > 0 && (
+          <button
+            className='absolute -top-12 right-6 py-3 px-10 z-10 font-light'
+            onClick={() => {
+              clickedPosition ? handleFindPath() : alert('출발지를 선택해주세요!');
+            }}
+          >
+            경로탐색
+          </button>
+        )}
       </div>
       <div className={`absolute bottom-16 left-0 w-full z-50 ${modal ? 'visible' : 'hidden'}`}>
         <DirectionSlide result={result} destination={destination} />
