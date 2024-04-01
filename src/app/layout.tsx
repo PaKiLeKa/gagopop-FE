@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-sync-scripts */
 import './globals.css';
 import type { Metadata } from 'next';
 import Navbar from '../components/navigaition/Navbar';
@@ -19,6 +20,7 @@ declare global {
     Kakao: any;
   }
 }
+const APPKEY = process.env.NEXT_PUBLIC_TMAP_API;
 
 export default async function RootLayout({
   children,
@@ -27,6 +29,12 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang='en'>
+      <head>
+        <script
+          type='text/javascript'
+          src={`https://apis.openapi.sk.com/tmap/jsv2?version=1&appkey=${APPKEY}`}
+        ></script>
+      </head>
       <body>
         <RecoilRootWrap>
           {children}

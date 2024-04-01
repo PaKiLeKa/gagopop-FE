@@ -125,25 +125,27 @@ export default function Map() {
   //   document.body.appendChild(script);
   // }, [src]);
 
+  // useEffect(() => {
+  //   if (window.Tmapv2) {
+  //     const script = document.createElement('script');
+  //     script.src = `${window.Tmapv2._getScriptLocation()}tmapjs2.min.js?version=20231206`;
+  //     script.async = false;
+  //     script.onload = onLoadMap;
+
+  //     //이전 스크립트 제거
+  //     const prevScript = document.querySelector(
+  //       'script[src^="' + window.Tmapv2._getScriptLocation() + '"]',
+  //     );
+  //     if (prevScript) {
+  //       document.body.removeChild(prevScript);
+  //     }
+
+  //     document.body.appendChild(script);
+  //   }
+  // }, []);
   useEffect(() => {
-    if (window.Tmapv2) {
-      const script = document.createElement('script');
-      script.src = `${window.Tmapv2._getScriptLocation()}tmapjs2.min.js?version=20231206`;
-      script.async = true;
-      script.onload = onLoadMap;
-
-      //이전 스크립트 제거
-      const prevScript = document.querySelector(
-        'script[src^="' + window.Tmapv2._getScriptLocation() + '"]',
-      );
-      if (prevScript) {
-        document.body.removeChild(prevScript);
-      }
-
-      document.body.appendChild(script);
-    }
+    onLoadMap();
   }, []);
-
   // 팝업 리스트 불러오기
   useEffect(() => {
     apiCred
@@ -347,11 +349,11 @@ export default function Map() {
 
   return (
     <>
-      <Script
+      {/* <Script
         type='text/javascript'
         src={`https://apis.openapi.sk.com/tmap/jsv2?version=1&appkey=${APPKEY}`}
         strategy='beforeInteractive'
-      />
+      /> */}
       <div id='map_div' className='relative'>
         <button
           onClick={() => {
