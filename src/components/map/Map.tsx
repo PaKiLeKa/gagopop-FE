@@ -3,9 +3,8 @@
 import Script from 'next/script';
 import { useEffect, useState } from 'react';
 import CurrentPositionIcon from '../../../public/icons/currentPosition.svg';
-import Testicon from '../../../public/icons/marker/startpin.svg';
 import { PopupTypewithWish } from '@/types/types';
-import { api } from '@/api';
+import { api, apiCred } from '@/api';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { destinationState } from '@/store/store';
@@ -27,7 +26,6 @@ export default function Map() {
     setCenter: (arg0: any) => void;
     setZoom: (arg0: number) => void;
   }
-
   // 경로 저장
   useEffect(() => {
     const destinationLatLng: string[] = [];
@@ -60,6 +58,13 @@ export default function Map() {
         let clickMarker: any[] = [];
         function onClick(e: { latLng: any }) {
           // 클릭한 위치에 새로 마커를 찍기 위해 이전에 있던 마커들을 제거
+          function removeMarkers() {
+            for (let i = 0; i < clickMarker.length; i++) {
+              clickMarker[i].setMap(null);
+            }
+            clickMarker = [];
+          }
+
           removeMarkers();
 
           let lonlat = e.latLng;
@@ -70,21 +75,20 @@ export default function Map() {
           });
 
           clickMarker.push(markerClick);
+
+          const clickMarkerImage = 'https://kr.object.ncloudstorage.com/gagopop/pin_start.png';
+          markerClick.setIcon(clickMarkerImage);
+
           setClickedPosition([lonlat.lng(), lonlat.lat()]);
-          console.log(lonlat.lat(), lonlat.lng());
-        }
-        function removeMarkers() {
-          for (var i = 0; i < clickMarker.length; i++) {
-            clickMarker[i].setMap(null);
-          }
-          clickMarker = [];
         }
 
         const marker = new window.Tmapv2.Marker({
           position: new window.Tmapv2.LatLng(lat, lon),
           map: mapInstance,
         });
-        const customMarkerImageUrl = 'https://via.placeholder.com/50';
+
+        const customMarkerImageUrl =
+          'https://kr.object.ncloudstorage.com/gagopop/pin_destination.png';
         marker.setIcon(customMarkerImageUrl);
 
         mapInstance.setCenter(new window.Tmapv2.LatLng(lat, lon));
@@ -101,34 +105,28 @@ export default function Map() {
     currentMap?.setZoom(15);
   };
 
-  // 1차 스크립트
+  // 스크립트 콜
   useEffect(() => {
     if (window.Tmapv2) {
       setSrc(window.Tmapv2._getScriptLocation());
     }
-  }, [src]);
+    const script = document.createElement('script');
+    script.src = `${src}tmapjs2.min.js?version=20231206`;
+    script.async = true;
+    script.onload = onLoadMap;
 
-  // 2차 스크립트
-  useEffect(() => {
-    if (src) {
-      const script = document.createElement('script');
-      script.src = `${src}tmapjs2.min.js?version=20231206`;
-      script.async = true;
-      script.onload = onLoadMap;
-
-      //이전 스크립트 제거
-      const prevScript = document.querySelector('script[src^="' + src + '"]');
-      if (prevScript) {
-        document.body.removeChild(prevScript);
-      }
-
-      document.body.appendChild(script);
+    //이전 스크립트 제거
+    const prevScript = document.querySelector('script[src^="' + src + '"]');
+    if (prevScript) {
+      document.body.removeChild(prevScript);
     }
+
+    document.body.appendChild(script);
   }, [src]);
 
   // 팝업 리스트 불러오기
   useEffect(() => {
-    api
+    apiCred
       .get('/popup/find-all')
       .then((res) => {
         setPopupList(res.data);
@@ -155,6 +153,15 @@ export default function Map() {
 
           // 마커에 번호 붙이기
           marker.index = index;
+
+          if (popup.inWishlist) {
+            const customMarkerImageUrl = 'https://kr.object.ncloudstorage.com/gagopop/pin_wish.png';
+            marker.setIcon(customMarkerImageUrl);
+          } else {
+            const customMarkerImageUrl =
+              'https://kr.object.ncloudstorage.com/gagopop/pin_popup.png';
+            marker.setIcon(customMarkerImageUrl);
+          }
         });
       }
     };
@@ -166,33 +173,40 @@ export default function Map() {
   const handleFindPath = () => {
     const startLat = clickedPosition && clickedPosition[1];
     const startLng = clickedPosition && clickedPosition[0];
-    // const endLat = destination.slice(-1);
+    const endLat = Object.values(destination)[Object.values(destination).length - 1].latitude;
+    const endLng = Object.values(destination)[Object.values(destination).length - 1].longitude;
+    let drawInfoArr = [];
+    let resultdrawArr: any[] = [];
+    let resultMarker: any[] = [];
     api
       .get(`/popup/find-route?latitude=${startLat}&longitude=${startLng}&pid=3,4,5`)
       .then((res) => res.data)
       .then((res) => {
-        const marker_s = new window.Tmapv2.Marker({
-          position: new window.Tmapv2.LatLng(startLat, startLng),
-          icon: 'https://kr.object.ncloudstorage.com/gagopop/pin_start.png',
-          iconSize: new window.Tmapv2.Size(24, 38),
-          map: currentMap,
-        });
-        const marker_e = new window.Tmapv2.Marker({
-          position: new window.Tmapv2.LatLng(37.566158, 126.98894),
-          icon: 'https://kr.object.ncloudstorage.com/gagopop/pin_destination.png',
-          iconSize: new window.Tmapv2.Size(24, 38),
-          map: currentMap,
-        });
-
         const handleShowPath = async () => {
+          
+          // 기존 그려진 라인 & 마커 초기화
+          if (resultdrawArr.length > 0) {
+            for (let i = 0; i < resultdrawArr.length; i++) {
+              resultdrawArr[i].setMap(null);
+            }
+            resultdrawArr = [];
+          }
+          if (resultMarker.length > 0) {
+            for (let i = 0; i < resultMarker.length; i++) {
+              resultMarker[i].setMap(null);
+            }
+            resultMarker = [];
+          }
+          drawInfoArr = [];
+
           try {
             const response = await axios.post(
               'https://apis.openapi.sk.com/tmap/routes/pedestrian',
               {
                 startX: startLng,
                 startY: startLat,
-                endX: '126.988940',
-                endY: '37.566158',
+                endX: endLng,
+                endY: endLat,
                 reqCoordType: 'WGS84GEO',
                 resCoordType: 'EPSG3857',
                 startName: '출발지',
@@ -215,19 +229,10 @@ export default function Map() {
               (resultData[0].properties.totalTime / 60).toFixed(0),
             ]);
 
-            // 기존 그려진 라인 & 마커 초기화
-            // if (resultdrawArr.length > 0) {
-            // for (const marker of resultdrawArr) {
-            // marker.setMap(null);
-            // }
-            const resultdrawArr = [];
-            // }
-
-            const drawInfoArr = [];
-
             for (const result of resultData) {
               const geometry = result.geometry;
-              const properties = result.properties;
+              let properties = result.properties;
+              let polyline;
 
               if (geometry.type === 'LineString') {
                 for (const coord of geometry.coordinates) {
@@ -243,20 +248,35 @@ export default function Map() {
                 }
               } else {
                 let markerImg = '';
+                let pType = '';
                 let size;
-                var pType = '';
 
-                if (properties.pointType === 'S') {
-                  markerImg = 'https://via.placeholder.com/50';
+                if (properties.pointType == 'SP') {
+                  //출발지 마커
+                  markerImg = 'https://kr.object.ncloudstorage.com/gagopop/pin_start.png';
+                  pType = 'SP';
                   size = new window.Tmapv2.Size(24, 38);
-                } else if (properties.pointType === 'E') {
-                  markerImg = 'https://via.placeholder.com/50';
+                } else if (properties.pointType == 'EP') {
+                  //도착지 마커
+                  markerImg = 'https://kr.object.ncloudstorage.com/gagopop/pin_destination.png';
+                  pType = 'EP';
                   size = new window.Tmapv2.Size(24, 38);
-                  pType = 'E';
+                } else if (
+                  properties.pointType == 'PP1' ||
+                  properties.pointType == 'PP2' ||
+                  properties.pointType == 'PP3' ||
+                  properties.pointType == 'PP4' ||
+                  properties.pointType == 'PP5' ||
+                  properties.pointType == 'PP6'
+                ) {
+                  //각 목적지 마커
+                  markerImg = 'https://kr.object.ncloudstorage.com/gagopop/pin_destination.png';
+                  pType = 'PP';
+                  size = new window.Tmapv2.Size(24, 38);
                 } else {
-                  markerImg = 'https://via.placeholder.com/50';
-                  size = new window.Tmapv2.Size(8, 8);
-                  pType = 'P';
+                  // else
+                  markerImg = 'http://topopen.tmap.co.kr/imgs/point.png';
+                  size = new window.Tmapv2.Size(1, 1);
                 }
 
                 const latlon = new window.Tmapv2.Point(
@@ -265,14 +285,20 @@ export default function Map() {
                 );
                 const convertPoint = new window.Tmapv2.Projection.convertEPSG3857ToWGS84GEO(latlon);
 
-                const marker = new window.Tmapv2.Marker({
-                  position: new window.Tmapv2.LatLng(convertPoint._lat, convertPoint._lng),
-                  icon: markerImg,
+                let routeInfoObj = {
+                  markerImage: markerImg,
+                  lng: convertPoint._lng,
+                  lat: convertPoint._lat,
+                  pointType: pType,
+                };
+
+                const marker_p = new window.Tmapv2.Marker({
+                  position: new window.Tmapv2.LatLng(routeInfoObj.lat, routeInfoObj.lng),
+                  icon: routeInfoObj.markerImage,
                   iconSize: size,
                   map: currentMap,
                 });
-
-                resultdrawArr.push(marker);
+                resultMarker.push(marker_p);
               }
             }
 
@@ -281,13 +307,10 @@ export default function Map() {
             console.error('Error:', error);
           }
         };
-
         handleShowPath();
-        const resultdrawArr = [];
 
         const drawLine = (arrPoint: any[]) => {
           let polyline;
-
           polyline = new window.Tmapv2.Polyline({
             path: arrPoint,
             strokeColor: '#FCC32E',
@@ -310,7 +333,7 @@ export default function Map() {
         src={`https://apis.openapi.sk.com/tmap/jsv2?version=1&appkey=${APPKEY}`}
         strategy='beforeInteractive'
       />
-      {src && <Script src={`${src}tmapjs2.min.js?version=20231206`} />}
+      <Script src={`${src}tmapjs2.min.js?version=20231206`} />
       <div id='map_div' className='relative'>
         <button
           onClick={() => {
