@@ -19,7 +19,7 @@ import { useRecoilState } from 'recoil';
 import { destinationState } from '@/store/store';
 import Badge from '@/components/badge/Badge';
 import { api, apiCred } from '@/api';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { PopupType, PopupTypewithWish } from '@/types/types';
 import { usePathname, useRouter } from 'next/navigation';
 import usePeriod from '@/hooks/usePeriod';
@@ -109,150 +109,152 @@ export default function PopUpDetail() {
   }, [popup]);
 
   return (
-    <div className='h-full pb-[104px]'>
-      <SearchBar searchBarStyle={'date'} />
-      <div className='h-full overflow-auto'>
-        <div className='relative aspect-square'>
-          <Image
-            src={popup ? popup?.popupStore?.imageUrl : ''}
-            alt='팝업 스토어 이미지'
-            fill
-            objectFit={enlarge ? 'contain' : 'none'}
-            className='brightness-75 bg-slate-100'
-          />
-          <div className='absolute'>
-            <div className='flex flex-col justify-between w-[360px] aspect-square p-4'>
-              <div className='flex flex-col gap-2'>
-                {wish ? (
-                  <button className='w-10 h-10'>
-                    <HeartIcon
-                      onClick={() => {
-                        handdleDeleteWishButton();
-                      }}
-                      width='40'
-                      height='40'
-                      viewBox='4 5 40 30'
-                    />
-                    /
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      handdleAddWishButton();
-                    }}
-                    className='w-10 h-10'
-                  >
-                    <EmptyHeartIcon width='40' height='40' viewBox='0 0 20 20' />
-                  </button>
-                )}
-                <TogoIcon />
-                <ShareIcon />
-                <Popover>
-                  <PopoverTrigger className='relative bottom-12  w-10 h-10 bg-transparent hover:brightness-50'></PopoverTrigger>
-                  <PopoverContent>
-                    <div className='relative flex justify-center items-center gap-2 bg-[rgba(255,255,255,0.5)]  left-12 px-3 py-1 rounded-2xl'>
-                      <button
-                        onClick={() => {
-                          handleShareToKakao();
-                        }}
-                        className='w-8 h-8 rounded-full'
-                      >
-                        <Image src={kakaoIcon} alt='카카오 공유하기' />
-                      </button>
-                      <button
-                        onClick={() => {
-                          copyURL();
-                        }}
-                        className='flex justify-center items-center w-8 h-8 bg-white border-b rounded-full p-1'
-                      >
-                        <Image src={LinkShareIcon} alt='링크 복사하기' width={20} height={20} />
-                      </button>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <div className='flex justify-between items-end text-white'>
-                <div>
-                  <Badge badgeState={periodState} diff={diffDay} />
-                  <p>{`${popup?.popupStore.startDate
-                    .toString()
-                    .substring(0, 10)} ~ ${popup?.popupStore.endDate
-                    .toString()
-                    .substring(0, 10)}`}</p>
-                  <p className='text-2xl font-bold'>{popup?.popupStore.name}</p>
-                </div>
-                <button
-                  className='bg-500-blue w-10 h-10 bg-transparent hover:brightness-50'
-                  onClick={() => {
-                    handleEnlargeButton();
-                  }}
-                >
-                  <GrowIcon />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='flex flex-col gap-4 p-4'>
-          <div className='flex gap-1'>
-            <TimeIcon />
-            <div className='text-sm'>
-              <p>운영시간</p>
-              <p className='text-gray-400 font-light'>{popup?.popupStore.operatingTime}</p>
-            </div>
-          </div>
-          <div className='flex gap-1'>
-            <AddressIcon />
-            <div className='text-sm'>
-              <p>주소</p>
-              <p className='text-gray-400 font-light'>{popup?.popupStore.address}</p>
-            </div>
-          </div>
-          <div className='flex gap-1'>
-            <SNSIcon />
-            <div className='text-sm'>
-              <p>SNS</p>
-              {popup?.popupStore.snsLink ? (
-                <a href={popup.popupStore.snsLink} className='text-blue-400 font-light'>
-                  링크로 이동
-                </a>
-              ) : (
-                <p className='text-gray-400 font-light'>SNS링크가 없습니다.</p>
-              )}
-            </div>
-          </div>
-          <div className='flex gap-2'>
-            <div>
-              <IntroIcon />
-            </div>
-            <div className='text-sm'>
-              <p>팝업스토어 소개</p>
-              {popup?.popupStore.info ? (
-                <p className='text-gray-400 font-light'>${popup.popupStore.info}</p>
-              ) : (
-                <p className='text-gray-400 font-light'>팝업 소개가 아직 작성되지 않았습니다.</p>
-              )}
-            </div>
-          </div>
-          <div>
-            <div className='flex gap-1 mb-2'>
-              <MapIcon />
-              <p>지도</p>
-            </div>
-            <DetailMap
-              lon={popup ? popup?.popupStore.longitude : 0}
-              lat={popup ? popup?.popupStore.latitude : 0}
+    <Suspense>
+      <div className='h-full pb-[104px]'>
+        <SearchBar searchBarStyle={'date'} />
+        <div className='h-full overflow-auto'>
+          <div className='relative aspect-square'>
+            <Image
+              src={popup ? popup?.popupStore?.imageUrl : ''}
+              alt='팝업 스토어 이미지'
+              fill
+              objectFit={enlarge ? 'contain' : 'none'}
+              className='brightness-75 bg-slate-100'
             />
+            <div className='absolute'>
+              <div className='flex flex-col justify-between w-[360px] aspect-square p-4'>
+                <div className='flex flex-col gap-2'>
+                  {wish ? (
+                    <button className='w-10 h-10'>
+                      <HeartIcon
+                        onClick={() => {
+                          handdleDeleteWishButton();
+                        }}
+                        width='40'
+                        height='40'
+                        viewBox='4 5 40 30'
+                      />
+                      /
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        handdleAddWishButton();
+                      }}
+                      className='w-10 h-10'
+                    >
+                      <EmptyHeartIcon width='40' height='40' viewBox='0 0 20 20' />
+                    </button>
+                  )}
+                  <TogoIcon />
+                  <ShareIcon />
+                  <Popover>
+                    <PopoverTrigger className='relative bottom-12  w-10 h-10 bg-transparent hover:brightness-50'></PopoverTrigger>
+                    <PopoverContent>
+                      <div className='relative flex justify-center items-center gap-2 bg-[rgba(255,255,255,0.5)]  left-12 px-3 py-1 rounded-2xl'>
+                        <button
+                          onClick={() => {
+                            handleShareToKakao();
+                          }}
+                          className='w-8 h-8 rounded-full'
+                        >
+                          <Image src={kakaoIcon} alt='카카오 공유하기' />
+                        </button>
+                        <button
+                          onClick={() => {
+                            copyURL();
+                          }}
+                          className='flex justify-center items-center w-8 h-8 bg-white border-b rounded-full p-1'
+                        >
+                          <Image src={LinkShareIcon} alt='링크 복사하기' width={20} height={20} />
+                        </button>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className='flex justify-between items-end text-white'>
+                  <div>
+                    <Badge badgeState={periodState} diff={diffDay} />
+                    <p>{`${popup?.popupStore.startDate
+                      .toString()
+                      .substring(0, 10)} ~ ${popup?.popupStore.endDate
+                      .toString()
+                      .substring(0, 10)}`}</p>
+                    <p className='text-2xl font-bold'>{popup?.popupStore.name}</p>
+                  </div>
+                  <button
+                    className='bg-500-blue w-10 h-10 bg-transparent hover:brightness-50'
+                    onClick={() => {
+                      handleEnlargeButton();
+                    }}
+                  >
+                    <GrowIcon />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='flex flex-col gap-4 p-4'>
+            <div className='flex gap-1'>
+              <TimeIcon />
+              <div className='text-sm'>
+                <p>운영시간</p>
+                <p className='text-gray-400 font-light'>{popup?.popupStore.operatingTime}</p>
+              </div>
+            </div>
+            <div className='flex gap-1'>
+              <AddressIcon />
+              <div className='text-sm'>
+                <p>주소</p>
+                <p className='text-gray-400 font-light'>{popup?.popupStore.address}</p>
+              </div>
+            </div>
+            <div className='flex gap-1'>
+              <SNSIcon />
+              <div className='text-sm'>
+                <p>SNS</p>
+                {popup?.popupStore.snsLink ? (
+                  <a href={popup.popupStore.snsLink} className='text-blue-400 font-light'>
+                    링크로 이동
+                  </a>
+                ) : (
+                  <p className='text-gray-400 font-light'>SNS링크가 없습니다.</p>
+                )}
+              </div>
+            </div>
+            <div className='flex gap-2'>
+              <div>
+                <IntroIcon />
+              </div>
+              <div className='text-sm'>
+                <p>팝업스토어 소개</p>
+                {popup?.popupStore.info ? (
+                  <p className='text-gray-400 font-light'>${popup.popupStore.info}</p>
+                ) : (
+                  <p className='text-gray-400 font-light'>팝업 소개가 아직 작성되지 않았습니다.</p>
+                )}
+              </div>
+            </div>
+            <div>
+              <div className='flex gap-1 mb-2'>
+                <MapIcon />
+                <p>지도</p>
+              </div>
+              <DetailMap
+                lon={popup ? popup?.popupStore.longitude : 0}
+                lat={popup ? popup?.popupStore.latitude : 0}
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <button
-        onClick={handleDestinationBtn}
-        className='flex justify-center items-center w-full h-12 bg-yellow-500'
-      >
-        목적지설정
-      </button>
-    </div>
+        <button
+          onClick={handleDestinationBtn}
+          className='flex justify-center items-center w-full h-12 bg-yellow-500'
+        >
+          목적지설정
+        </button>
+      </div>
+    </Suspense>
   );
 }
