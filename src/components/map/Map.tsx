@@ -9,6 +9,7 @@ import { api } from '@/api';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { destinationState } from '@/store/store';
+import DirectionSlide from '../slide/DirectionSlide';
 
 export default function Map() {
   const [src, setSrc] = useState<string>();
@@ -18,6 +19,8 @@ export default function Map() {
   const [destination, setDestinationState] = useRecoilState(destinationState);
   const [destinationXY, setDestinationXY] = useState<string>('');
   const [clickedPosition, setClickedPosition] = useState<string[]>();
+  const [result, setResult] = useState<string[]>([]);
+  const [modal, setModal] = useState<boolean>(false);
   const APPKEY = process.env.NEXT_PUBLIC_TMAP_API;
   const [popupList, setPopupList] = useState<PopupTypewithWish[]>();
 
@@ -51,7 +54,7 @@ export default function Map() {
         const mapInstance = new window.Tmapv2.Map('map_div', {
           center: new window.Tmapv2.LatLng(lat, lon),
           width: '100%',
-          height: '83vh',
+          height: '100vh',
           zoom: 15,
           zoomControl: false,
           scrollwheel: true,
@@ -71,7 +74,7 @@ export default function Map() {
           });
 
           clickMarker.push(markerClick);
-          setClickedPosition([lonlat.lng(),lonlat.lat()]);
+          setClickedPosition([lonlat.lng(), lonlat.lat()]);
           console.log(lonlat.lat(), lonlat.lng());
         }
         function removeMarkers() {
@@ -211,12 +214,11 @@ export default function Map() {
 
             const resultData = response.data.features;
 
-            // 결과 출력
-            const tDistance =
-              '총 거리: ' + (resultData[0].properties.totalDistance / 1000).toFixed(1) + 'km, ';
-            const tTime = '총 시간: ' + (resultData[0].properties.totalTime / 60).toFixed(0) + '분';
-
-            console.log(tDistance + tTime);
+            // 결과 저장
+            setResult([
+              (resultData[0].properties.totalDistance / 1000).toFixed(1) + 'km',
+              (resultData[0].properties.totalTime / 60).toFixed(0),
+            ]);
 
             // 기존 그려진 라인 & 마커 초기화
             // if (resultdrawArr.length > 0) {
@@ -303,6 +305,7 @@ export default function Map() {
           currentMap?.setZoom(15);
         };
       });
+    setModal(true);
   };
 
   return (
@@ -326,12 +329,24 @@ export default function Map() {
           <p className='text-xs'>내위치</p>
         </button>
         <button
+          className='absolute top-40 left-10 z-10'
           onClick={() => {
             handleFindPath();
           }}
         >
           경로탐색
         </button>
+      </div>
+      <div className={`absolute bottom-16 left-0 w-full z-50 ${modal ? 'visible' : 'hidden'}`}>
+        <DirectionSlide result={result} destination={destination} />
+        <div
+          onClick={() => {
+            setModal(false);
+          }}
+          className='absolute right-4 top-4 text-sm cursor-pointer z-20'
+        >
+          닫기
+        </div>
       </div>
     </>
   );
