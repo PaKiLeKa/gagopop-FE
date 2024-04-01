@@ -19,9 +19,12 @@ export default function PopupCard({ info, period }: { info: PopupTypewithWish; p
   const [wish, setWish] = useState<boolean>(info.inWishlist);
   const [destination, setDestinationState] = useRecoilState(destinationState);
   const router = useRouter();
+  
   const handleDestinationBtn = () => {
-    setDestinationState([...destination, info.popupStore]);
+    if (destination.length < 5 && !destination.some((v) => v.id === info.popupStore.id))
+      setDestinationState([...destination, info.popupStore]);
   };
+
   const { periodState, diffDay } = usePeriod(info?.popupStore);
 
   const handleWishButton = () => {

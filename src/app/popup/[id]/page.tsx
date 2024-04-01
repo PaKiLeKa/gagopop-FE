@@ -36,9 +36,11 @@ export default function PopUpDetail() {
   const searchParams = pathname.split('/')[2];
 
   const handleDestinationBtn = () => {
-    const filteredPopups = popup ? [popup.popupStore] : [];
-
-    setDestinationState([...destination, ...filteredPopups]);
+    const filteredPopups = popup && popup.popupStore;
+    if (filteredPopups !== undefined) {
+      if (destination.length < 5 && !destination.some((v) => v.id === filteredPopups.id))
+        setDestinationState([...destination, filteredPopups]);
+    }
   };
 
   const copyURL = () => {

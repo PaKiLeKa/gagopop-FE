@@ -3,13 +3,12 @@
 import Script from 'next/script';
 import { useEffect, useState } from 'react';
 import CurrentPositionIcon from '../../../public/icons/currentPosition.svg';
-import Splash from '../splash/Splash';
 import Testicon from '../../../public/icons/marker/startpin.svg';
 import { PopupTypewithWish } from '@/types/types';
 import { api } from '@/api';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
-import { destinationState } from '@/store/search';
+import { destinationState } from '@/store/store';
 
 export default function Map() {
   const [src, setSrc] = useState<string>();
@@ -17,25 +16,32 @@ export default function Map() {
   const [currentXY, setCurrentXY] = useState<number[]>([]);
   const [loading, setLoading] = useState<Boolean>(true);
   const [destination, setDestinationState] = useRecoilState(destinationState);
-  const [destinationXY, setDeestinationXY] = useState<string>('');
+  const [destinationXY, setDestinationXY] = useState<string>('');
+  const [clickedPosition, setClickedPosition] = useState<string[]>();
   const APPKEY = process.env.NEXT_PUBLIC_TMAP_API;
-
   const [popupList, setPopupList] = useState<PopupTypewithWish[]>();
-
-  useEffect(() => {
-    const destinationLatLng: string[] = [];
-    destination?.map((v) => {
-      destinationLatLng.push(v.longitude + ',' + v.latitude);
-    });
-    setDeestinationXY(destinationLatLng.join('_'));
-    console.log(destinationLatLng.join(','));
-  }, [destination]);
 
   interface currentMapType {
     setCenter: (arg0: any) => void;
     setZoom: (arg0: number) => void;
   }
+  console.log('=====================================================');
+  console.log(destination, 'destination');
+  console.log(destinationXY, 'destinationXY');
 
+  // 경로 저장
+  useEffect(() => {
+    const destinationLatLng: string[] = [];
+    destination?.map((v) => {
+      destinationLatLng.push(v.longitude + ',' + v.latitude);
+    });
+
+    setDestinationXY(clickedPosition?.join(',') + '_' + destinationLatLng.join('_'));
+
+    console.log(destinationLatLng.join(','));
+  }, [destination, clickedPosition]);
+
+  // 지도 불러오기
   const onLoadMap = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -51,17 +57,36 @@ export default function Map() {
           scrollwheel: true,
         });
 
+        mapInstance.addListener('click', onClick); //map 클릭 이벤트를 등록
+        let clickMarker: any[] = [];
+        function onClick(e: { latLng: any }) {
+          // 클릭한 위치에 새로 마커를 찍기 위해 이전에 있던 마커들을 제거
+          removeMarkers();
+
+          let lonlat = e.latLng;
+          //Marker 객체 생성.
+          let markerClick = new window.Tmapv2.Marker({
+            position: new window.Tmapv2.LatLng(lonlat.lat(), lonlat.lng()), //Marker의 중심좌표 설정.
+            map: mapInstance, //Marker가 표시될 Map 설정.
+          });
+
+          clickMarker.push(markerClick);
+          setClickedPosition([lonlat.lng(),lonlat.lat()]);
+          console.log(lonlat.lat(), lonlat.lng());
+        }
+        function removeMarkers() {
+          for (var i = 0; i < clickMarker.length; i++) {
+            clickMarker[i].setMap(null);
+          }
+          clickMarker = [];
+        }
+
         const marker = new window.Tmapv2.Marker({
           position: new window.Tmapv2.LatLng(lat, lon),
           map: mapInstance,
         });
         const customMarkerImageUrl = 'https://via.placeholder.com/50';
         marker.setIcon(customMarkerImageUrl);
-        const InfoWindow = new window.Tmapv2.InfoWindow({
-          position: new window.Tmapv2.LatLng(lat, lon),
-          type: 2,
-          map: mapInstance,
-        });
 
         mapInstance.setCenter(new window.Tmapv2.LatLng(lat, lon));
         mapInstance.setZoom(15);
@@ -72,6 +97,7 @@ export default function Map() {
     setLoading(false);
   };
 
+  // 현재 위치 버튼
   const handleCurrentButton = () => {
     currentMap?.setCenter(new window.Tmapv2.LatLng(currentXY[0], currentXY[1]));
     currentMap?.setZoom(15);
@@ -102,6 +128,7 @@ export default function Map() {
     }
   }, [src]);
 
+  // 팝업 리스트 불러오기
   useEffect(() => {
     api
       .get('/popup/find-all')
@@ -114,6 +141,7 @@ export default function Map() {
       });
   }, []);
 
+  // 팝업 마커 그려주기
   useEffect(() => {
     // 팝업 리스트가 있고 지도 객체가 로드되었을 때 실행되는 콜백 함수
     const handlePopupMarkers = () => {
@@ -129,64 +157,42 @@ export default function Map() {
 
           // 마커에 번호 붙이기
           marker.index = index;
-
-          // 마커 클릭 시 정보 창 열기
-          marker.addListener('click', () => {
-            // 정보 창 내용 설정
-            const infoWindowContent = `
-              <div>
-                <h3>${name}</h3>
-              </div>
-            `;
-
-            // 정보 창 생성
-            const infoWindow = new window.Tmapv2.InfoWindow({
-              position: new window.Tmapv2.LatLng(latitude, longitude),
-              type: 2,
-              content: infoWindowContent,
-              map: currentMap,
-            });
-
-            // 정보 창에 번호 붙이기
-            infoWindow.index = index;
-          });
         });
       }
     };
-
     // 팝업 리스트나 지도 객체가 변경될 때마다 실행
     handlePopupMarkers();
   }, [popupList, currentMap]);
 
+  // 경로 찾기 버튼
   const handleFindPath = () => {
-    const startLat = currentXY[0];
-    const endLng = currentXY[1];
+    const startLat = clickedPosition && clickedPosition[1];
+    const startLng = clickedPosition && clickedPosition[0];
+    // const endLat = destination.slice(-1);
     api
-      .get(`/popup/find-route?latitude=${startLat}&longitude=${endLng}&pid=3,4,5`)
+      .get(`/popup/find-route?latitude=${startLat}&longitude=${startLng}&pid=3,4,5`)
       .then((res) => res.data)
       .then((res) => {
         const marker_s = new window.Tmapv2.Marker({
-          position: new window.Tmapv2.LatLng(37.564991, 126.983937),
-          icon: 'https://via.placeholder.com/50',
+          position: new window.Tmapv2.LatLng(startLat, startLng),
+          icon: 'https://kr.object.ncloudstorage.com/gagopop/pin_start.png',
           iconSize: new window.Tmapv2.Size(24, 38),
           map: currentMap,
         });
         const marker_e = new window.Tmapv2.Marker({
           position: new window.Tmapv2.LatLng(37.566158, 126.98894),
-          icon: 'https://via.placeholder.com/50',
+          icon: 'https://kr.object.ncloudstorage.com/gagopop/pin_destination.png',
           iconSize: new window.Tmapv2.Size(24, 38),
           map: currentMap,
         });
 
         const handleShowPath = async () => {
-          const startLat = currentXY[0];
-          const endLng = currentXY[1];
           try {
             const response = await axios.post(
               'https://apis.openapi.sk.com/tmap/routes/pedestrian',
               {
-                startX: '126.983937',
-                startY: '37.564991',
+                startX: startLng,
+                startY: startLat,
                 endX: '126.988940',
                 endY: '37.566158',
                 reqCoordType: 'WGS84GEO',
@@ -278,6 +284,7 @@ export default function Map() {
             console.error('Error:', error);
           }
         };
+
         handleShowPath();
         const resultdrawArr = [];
 
@@ -292,6 +299,8 @@ export default function Map() {
           });
 
           resultdrawArr.push(polyline);
+          currentMap?.setCenter(new window.Tmapv2.LatLng(startLat, startLng));
+          currentMap?.setZoom(15);
         };
       });
   };
@@ -304,30 +313,26 @@ export default function Map() {
         strategy='beforeInteractive'
       />
       {src && <Script src={`${src}tmapjs2.min.js?version=20231206`} />}
-      {!loading ? (
-        <div id='map_div' className='relative'>
-          <button
-            onClick={() => {
-              handleCurrentButton();
-            }}
-            className='absolute top-2 left-2 z-10'
-          >
-            <div className='hover:bg-gray-300 rounded-full'>
-              <CurrentPositionIcon />
-            </div>
-            <p className='text-xs'>내위치</p>
-          </button>
-          <button
-            onClick={() => {
-              handleFindPath();
-            }}
-          >
-            경로탐색
-          </button>
-        </div>
-      ) : (
-        <Splash />
-      )}
+      <div id='map_div' className='relative'>
+        <button
+          onClick={() => {
+            handleCurrentButton();
+          }}
+          className='absolute top-2 left-2 z-10'
+        >
+          <div className='hover:bg-gray-300 rounded-full'>
+            <CurrentPositionIcon />
+          </div>
+          <p className='text-xs'>내위치</p>
+        </button>
+        <button
+          onClick={() => {
+            handleFindPath();
+          }}
+        >
+          경로탐색
+        </button>
+      </div>
     </>
   );
 }

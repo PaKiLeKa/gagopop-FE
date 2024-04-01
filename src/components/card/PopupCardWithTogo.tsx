@@ -16,9 +16,12 @@ import { api, apiCred } from '@/api';
 export default function PopupCard({ info, period }: { info: PopupTypewithTogo; period: string[] }) {
   const [destination, setDestinationState] = useRecoilState(destinationState);
   const router = useRouter();
+  
   const handleDestinationBtn = () => {
-    setDestinationState([...destination, info.popupStore]);
+    if (destination.length < 5 && !destination.some((v) => v.id === info.popupStore.id))
+      setDestinationState([...destination, info.popupStore]);
   };
+
   const { periodState, diffDay } = usePeriod(info?.popupStore);
 
   const handleTogoButton = () => {};

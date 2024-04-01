@@ -17,9 +17,13 @@ export default function PopupCard({ info, period }: { info: PopupType; period: s
   const [wishList, setWishList] = useState<PopupTypewithTogo[]>();
   const [destination, setDestinationState] = useRecoilState(destinationState);
   const router = useRouter();
+
   const handleDestinationBtn = () => {
+    if(destination.length <5 && !destination.some((v)=> v.id === info.id))
     setDestinationState([...destination, info]);
   };
+
+
   const { periodState, diffDay } = usePeriod(info);
 
   const handleWishButton = () => {
