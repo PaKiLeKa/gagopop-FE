@@ -28,9 +28,9 @@ export default function Map() {
     setCenter: (arg0: any) => void;
     setZoom: (arg0: number) => void;
   }
-  console.log('=====================================================');
-  console.log(destination, 'destination');
-  console.log(destinationXY, 'destinationXY');
+  // console.log('=====================================================');
+  // console.log(destination, 'destination');
+  // console.log(destinationXY, 'destinationXY');
 
   // 경로 저장
   useEffect(() => {

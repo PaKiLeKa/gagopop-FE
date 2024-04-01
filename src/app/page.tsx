@@ -5,7 +5,7 @@ import Map from '@/components/map/Map';
 import SearchBar from '@/components/searchbar/SearchBar';
 import BottomSlide from '@/components/slide/BottomSlide';
 import { destinationState, splashState } from '@/store/store';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { api, apiCred } from '@/api';
 import { PopupTypewithWish } from '../types/types';
@@ -25,7 +25,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (destination.length > 1) {
+    if (destination.length > 0) {
       setSearchStyle('bar');
     } else {
       setSearchStyle('circle');
@@ -44,7 +44,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
+    <Suspense>
       <Splash splash={splash} />
       <SearchBar searchBarStyle={searchStyle} />
       <Map />
@@ -63,6 +63,6 @@ export default function Home() {
           )
         }
       />
-    </div>
+    </Suspense>
   );
 }

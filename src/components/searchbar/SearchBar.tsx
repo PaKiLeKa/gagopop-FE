@@ -23,6 +23,16 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
     router.back();
   };
 
+  const handleDeleteButton = (indexToDelete: number) => {
+    setDestinationState((prevDestination) => {
+      const newDestination = prevDestination.filter((_, index) => index !== indexToDelete);
+
+      return newDestination;
+    });
+  };
+
+  console.log(destination);
+
   return (
     <Suspense>
       {/* 홈 페이지 */}
@@ -58,28 +68,37 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
         </div>
       ) : // 홈 페이지 목적지 검색 리스트
       searchBarStyle === 'bar' ? (
-        <div className='bg-red-500'>
+        <div className=''>
           <DatePicker searchBarStyle={searchBarStyle} />
           <div className='flex flex-col gap-1 p-3'>
             <div className='flex justify-center items-center gap-1'>
               <div>
                 <StartIcon />
               </div>
-              <Input defaultValue='출발지를 선택하세요' className='rounded-full pr-16 text-sm' />
+              <Input
+                defaultValue='지도를 클릭해서 출발지를 설정해보세요.'
+                className='rounded-full text-sm'
+              />
             </div>
-            {destination?.slice(1).map((v, i) => {
+            {destination?.map((v, i) => {
               return (
                 <div key={i} className='flex relative'>
                   <div className='flex justify-center items-center ml-1 mr-2 w-10 h-10'>
                     <DestinationIcon />
                   </div>
                   <Input
-                    value={destination[i + 1].name}
+                    value={destination[i].name}
                     readOnly
                     className='rounded-full pr-10 text-sm'
                   />
                   <div className='flex justify-center items-center absolute right-1 top-2.5 w-10 h-5 border-l'>
-                    <button className='flex justify-center items-center w-5 h-5 rounded-full bg-gray-200'>
+                    {/* 빼기버튼 */}
+                    <button
+                      onClick={() => {
+                        handleDeleteButton(i);
+                      }}
+                      className='flex justify-center items-center w-5 h-5 rounded-full bg-gray-200'
+                    >
                       ━
                     </button>
                   </div>
@@ -87,15 +106,27 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
               );
             })}
             {/* 목적지 하위 검색탭 */}
-            <div className='flex gap-1 bg-blue-500'>
-              <div className='flex justify-center items-center ml-1 mr-1 w-10 h-10'>
-                <DestinationIcon />
+            {destination.length === 5 ? (
+              <div className='flex gap-1'>
+                <div className='flex justify-center items-center ml-1 mr-1 w-10 h-10'>
+                  <DestinationIcon />
+                </div>
+                <Input
+                  placeholder='경로는 최대 5개 까지 선택 가능합니다.'
+                  className='rounded-full pr-10 text-sm w-full bg-gray-200 placeholder:text-gray-500'
+                />
               </div>
-              <Input
-                placeholder='지역, 팝업스토어 명 키워드로 찾아보세요.'
-                className='rounded-full pr-10 text-sm w-full'
-              />
-            </div>
+            ) : (
+              <div className='flex gap-1'>
+                <div className='flex justify-center items-center ml-1 mr-1 w-10 h-10'>
+                  <DestinationIcon />
+                </div>
+                <Input
+                  placeholder='지역, 팝업스토어 명 키워드로 찾아보세요.'
+                  className='rounded-full pr-10 text-sm w-full'
+                />
+              </div>
+            )}
           </div>
           <div className='flex gap-2 justify-center items-center bg-gray-100'>
             <button
