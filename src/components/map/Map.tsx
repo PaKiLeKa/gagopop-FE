@@ -1,7 +1,7 @@
 'use client';
 
 import Script from 'next/script';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import CurrentPositionIcon from '../../../public/icons/currentPosition.svg';
 import { PopupTypewithWish } from '@/types/types';
 import { api, apiCred } from '@/api';
@@ -106,23 +106,43 @@ export default function Map() {
   };
 
   // 스크립트 콜
+  // useEffect(() => {
+  //   if (window.Tmapv2) {
+  //     setSrc(window.Tmapv2._getScriptLocation());
+  //   }
+
+  //   const script = document.createElement('script');
+  //   script.src = `${src}tmapjs2.min.js?version=20231206`;
+  //   script.async = true;
+  //   script.onload = onLoadMap;
+
+  //   //이전 스크립트 제거
+  //   const prevScript = document.querySelector('script[src^="' + src + '"]');
+  //   if (prevScript) {
+  //     document.body.removeChild(prevScript);
+  //   }
+
+  //   document.body.appendChild(script);
+  // }, [src]);
+
   useEffect(() => {
     if (window.Tmapv2) {
-      setSrc(window.Tmapv2._getScriptLocation());
-    }
-    const script = document.createElement('script');
-    script.src = `${src}tmapjs2.min.js?version=20231206`;
-    script.async = true;
-    script.onload = onLoadMap;
+      const script = document.createElement('script');
+      script.src = `${window.Tmapv2._getScriptLocation()}tmapjs2.min.js?version=20231206`;
+      script.async = true;
+      script.onload = onLoadMap;
 
-    //이전 스크립트 제거
-    const prevScript = document.querySelector('script[src^="' + src + '"]');
-    if (prevScript) {
-      document.body.removeChild(prevScript);
-    }
+      //이전 스크립트 제거
+      const prevScript = document.querySelector(
+        'script[src^="' + window.Tmapv2._getScriptLocation() + '"]',
+      );
+      if (prevScript) {
+        document.body.removeChild(prevScript);
+      }
 
-    document.body.appendChild(script);
-  }, [src]);
+      document.body.appendChild(script);
+    }
+  }, []);
 
   // 팝업 리스트 불러오기
   useEffect(() => {
@@ -183,7 +203,6 @@ export default function Map() {
       .then((res) => res.data)
       .then((res) => {
         const handleShowPath = async () => {
-          
           // 기존 그려진 라인 & 마커 초기화
           if (resultdrawArr.length > 0) {
             for (let i = 0; i < resultdrawArr.length; i++) {
@@ -333,7 +352,6 @@ export default function Map() {
         src={`https://apis.openapi.sk.com/tmap/jsv2?version=1&appkey=${APPKEY}`}
         strategy='beforeInteractive'
       />
-      <Script src={`${src}tmapjs2.min.js?version=20231206`} />
       <div id='map_div' className='relative'>
         <button
           onClick={() => {
