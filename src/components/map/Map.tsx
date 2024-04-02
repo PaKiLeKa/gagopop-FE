@@ -142,6 +142,7 @@ export default function Map() {
   //     document.body.appendChild(script);
   //   }
   // }, []);
+  
   useEffect(() => {
     onLoadMap();
   }, []);
