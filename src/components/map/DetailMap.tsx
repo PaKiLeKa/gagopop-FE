@@ -24,7 +24,10 @@ export default function DetailMap({ lon, lat }: { lon: number; lat: number }) {
   };
 
   useEffect(() => {
-    onLoadMap(lat, lon);
+    const mapDiv = document.getElementById('map_div');
+    if (!mapDiv?.firstChild) {
+      onLoadMap(lat, lon);
+    }
   }, [lat, lon]);
 
   return (

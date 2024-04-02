@@ -26,15 +26,14 @@ export default function Map() {
     setCenter: (arg0: any) => void;
     setZoom: (arg0: number) => void;
   }
+  
   // 경로 저장
   useEffect(() => {
     const destinationLatLng: string[] = [];
     destination?.map((v) => {
       destinationLatLng.push(v.longitude + ',' + v.latitude);
     });
-
     setDestinationXY(clickedPosition?.join(',') + '_' + destinationLatLng.join('_'));
-
   }, [destination, clickedPosition]);
 
   // 지도 불러오기
@@ -142,9 +141,9 @@ export default function Map() {
   //     document.body.appendChild(script);
   //   }
   // }, []);
-  
+
   useEffect(() => {
-    onLoadMap();
+      onLoadMap();
   }, []);
   // 팝업 리스트 불러오기
   useEffect(() => {
