@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 export default function DetailMap({ lon, lat }: { lon: number; lat: number }) {
-  const APPKEY = process.env.NEXT_PUBLIC_TMAP_API;
+  const [currentMap, setCurrentMap] = useState();
 
   const onLoadMap = (lat: number, lon: number) => {
     const mapInstance = new window.Tmapv2.Map('map_div', {
@@ -21,13 +21,11 @@ export default function DetailMap({ lon, lat }: { lon: number; lat: number }) {
     });
 
     mapInstance.setCenter(new window.Tmapv2.LatLng(lat, lon));
+    setCurrentMap(mapInstance);
   };
 
   useEffect(() => {
-    const mapDiv = document.getElementById('map_div');
-    if (!mapDiv?.firstChild) {
-      onLoadMap(lat, lon);
-    }
+    if (lon && lat) onLoadMap(lat, lon);
   }, [lat, lon]);
 
   return (
