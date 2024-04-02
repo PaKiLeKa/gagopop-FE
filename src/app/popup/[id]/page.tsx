@@ -76,7 +76,6 @@ export default function PopUpDetail() {
     apiCred
       .get(`/user/wishlist/delete?pid=${popup?.popupStore.id}`)
       .then((res) => {
-        console.log(res);
         setWish(!wish);
       })
       .catch((error) => console.log(error));

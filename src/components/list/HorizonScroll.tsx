@@ -12,7 +12,6 @@ import { PopupCategoryList, PopupType } from '@/types/types';
 export default function HorizonScroll({ list }: { list: [string, PopupType[]] }) {
   const router = useRouter();
 
-  console.log(list);
   return (
     <>
       <div className='flex justify-between w-full px-3'>

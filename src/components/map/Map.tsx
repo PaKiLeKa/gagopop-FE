@@ -35,7 +35,6 @@ export default function Map() {
 
     setDestinationXY(clickedPosition?.join(',') + '_' + destinationLatLng.join('_'));
 
-    console.log(destinationLatLng.join(','));
   }, [destination, clickedPosition]);
 
   // 지도 불러오기
@@ -152,7 +151,6 @@ export default function Map() {
       .get('/popup/find-all')
       .then((res) => {
         setPopupList(res.data);
-        console.log(res.data);
       })
       .catch(() => {
         console.log('error');

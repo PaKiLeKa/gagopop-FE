@@ -63,7 +63,6 @@ export default function SearchList() {
       });
   }, []);
 
-  console.log(periodArray);
   return (
     <Suspense>
       <div className='h-[100vh]'>

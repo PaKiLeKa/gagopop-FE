@@ -31,8 +31,6 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
     });
   };
 
-  console.log(destination);
-
   return (
     <Suspense>
       {/* 홈 페이지 */}

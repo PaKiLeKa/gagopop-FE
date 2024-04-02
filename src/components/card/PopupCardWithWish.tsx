@@ -32,7 +32,6 @@ export default function PopupCard({ info, period }: { info: PopupTypewithWish; p
       .get(`/user/wishlist/add?pid=${info.popupStore.id}`)
       .then((res) => {
         setWish(!wish);
-        console.log(res);
       })
       .catch((error) => console.log(error));
   };
@@ -42,7 +41,6 @@ export default function PopupCard({ info, period }: { info: PopupTypewithWish; p
       .get(`/user/wishlist/delete?pid=${info?.popupStore.id}`)
       .then((res) => {
         setWish(!wish);
-        console.log(res);
       })
       .catch((error) => console.log(error));
   };
