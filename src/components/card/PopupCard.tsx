@@ -11,7 +11,7 @@ import { PopupType, PopupTypewithTogo, PopupTypewithWish } from '@/types/types';
 import { useRouter } from 'next/navigation';
 import usePeriod from '@/hooks/usePeriod';
 import { api, apiCred } from '@/api';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 export default function PopupCard({ info, period }: { info: PopupType; period: string[] }) {
   const [wishList, setWishList] = useState<PopupTypewithTogo[]>();
@@ -19,10 +19,9 @@ export default function PopupCard({ info, period }: { info: PopupType; period: s
   const router = useRouter();
 
   const handleDestinationBtn = () => {
-    if(destination.length <5 && !destination.some((v)=> v.id === info.id))
-    setDestinationState([...destination, info]);
+    if (destination.length < 5 && !destination.some((v) => v.id === info.id))
+      setDestinationState([...destination, info]);
   };
-
 
   const { periodState, diffDay } = usePeriod(info);
 
@@ -48,67 +47,69 @@ export default function PopupCard({ info, period }: { info: PopupType; period: s
   }, []);
 
   return (
-    <div
-      className={`flex h-[120px] p-3 border-b border-b-gray-100 ${
-        period?.length !== 0 && !period?.includes(periodState) ? 'hidden' : ''
-      }`}
-    >
-      <div className='w-[100px] h-[100px] relative rounded-md aspect-square overflow-hidden'>
-        <Image
-          onClick={() => {
-            router.push(`/popup/${info?.id}`);
-          }}
-          src={info?.imageUrl}
-          alt='설명'
-          className='w-[100px] h-[100px]'
-          fill
-        />
-        <div
-          onClick={() => {
-            wishList?.find((item) => item.popupStore && item.popupStore.id === info.id)
-              ? handleDeleteWishButton()
-              : handleWishButton();
-          }}
-          className='absolute top-1 left-1 cursor-pointer'
-        >
-          {wishList?.find((item) => item.popupStore && item.popupStore.id === info.id) ? (
-            <Heart width='20' height='20' viewBox='4 0 40 40' />
-          ) : (
-            <EmptyHeart />
-          )}
-        </div>
-      </div>
-      <div className='flex flex-col justify-between w-2/3 ml-2 '>
-        <div className='w-full'>
-          <div className='flex justify-between mb-2'>
-            <p className='text-[10px] text-gray-400'>
-              {info?.startDate.toString().substring(0, 10) +
-                ' ~ ' +
-                info?.endDate.toString().substring(0, 10)}
-            </p>
-            <Badge badgeState={periodState} diff={diffDay} />
-          </div>
-          <p
+    <Suspense>
+      <div
+        className={`flex h-[120px] p-3 border-b border-b-gray-100 ${
+          period?.length !== 0 && !period?.includes(periodState) ? 'hidden' : ''
+        }`}
+      >
+        <div className='w-[100px] h-[100px] relative rounded-md aspect-square overflow-hidden'>
+          <Image
             onClick={() => {
               router.push(`/popup/${info?.id}`);
             }}
-            className='font-bold -mt-2'
-          >
-            {info?.name}
-          </p>
-        </div>
-        <div className='flex justify-between items-end'>
-          <p className='text-[10px] text-gray-400'>{info?.address}</p>
-          <button
+            src={info?.imageUrl}
+            alt='설명'
+            className='w-[100px] h-[100px]'
+            fill
+          />
+          <div
             onClick={() => {
-              handleDestinationBtn();
+              wishList?.find((item) => item.popupStore && item.popupStore.id === info.id)
+                ? handleDeleteWishButton()
+                : handleWishButton();
             }}
-            className='flex justify-center items-center shrink-0 w-11 h-11 border border-gray-300 rounded-full '
+            className='absolute top-1 left-1 cursor-pointer'
           >
-            <DestinationIcon />
-          </button>
+            {wishList?.find((item) => item.popupStore && item.popupStore.id === info.id) ? (
+              <Heart width='20' height='20' viewBox='4 0 40 40' />
+            ) : (
+              <EmptyHeart />
+            )}
+          </div>
+        </div>
+        <div className='flex flex-col justify-between w-2/3 ml-2 '>
+          <div className='w-full'>
+            <div className='flex justify-between mb-2'>
+              <p className='text-[10px] text-gray-400'>
+                {info?.startDate.toString().substring(0, 10) +
+                  ' ~ ' +
+                  info?.endDate.toString().substring(0, 10)}
+              </p>
+              <Badge badgeState={periodState} diff={diffDay} />
+            </div>
+            <p
+              onClick={() => {
+                router.push(`/popup/${info?.id}`);
+              }}
+              className='font-bold -mt-2'
+            >
+              {info?.name}
+            </p>
+          </div>
+          <div className='flex justify-between items-end'>
+            <p className='text-[10px] text-gray-400'>{info?.address}</p>
+            <button
+              onClick={() => {
+                handleDestinationBtn();
+              }}
+              className='flex justify-center items-center shrink-0 w-11 h-11 border border-gray-300 rounded-full '
+            >
+              <DestinationIcon />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </Suspense>
   );
 }

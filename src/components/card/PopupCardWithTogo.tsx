@@ -12,11 +12,12 @@ import Test from '../../../public/images/dummy.png';
 import { useRouter } from 'next/navigation';
 import usePeriod from '@/hooks/usePeriod';
 import { api, apiCred } from '@/api';
+import { Suspense } from 'react';
 
 export default function PopupCard({ info, period }: { info: PopupTypewithTogo; period: string[] }) {
   const [destination, setDestinationState] = useRecoilState(destinationState);
   const router = useRouter();
-  
+
   const handleDestinationBtn = () => {
     if (destination.length < 5 && !destination.some((v) => v.id === info.popupStore.id))
       setDestinationState([...destination, info.popupStore]);
@@ -28,61 +29,63 @@ export default function PopupCard({ info, period }: { info: PopupTypewithTogo; p
   const handleDeleteTogoButton = () => {};
 
   return (
-    <div
-      className={`flex h-[120px] p-3 border-b border-b-gray-100 ${
-        period?.length !== 0 && !period?.includes(periodState) ? 'hidden' : ''
-      }`}
-    >
-      <div className='w-[100px] h-[100px] relative rounded-md aspect-square overflow-hidden'>
-        <Image
-          onClick={() => {
-            router.push(`/popup/${info?.popupStore.id}`);
-          }}
-          src={info?.popupStore?.imageUrl ? info.popupStore?.imageUrl : Test}
-          alt='설명'
-          className='w-[100px] h-[100px]'
-          fill
-        />
-        <div
-          onClick={() => {
-            info.inTogo ? handleDeleteTogoButton() : handleTogoButton();
-          }}
-          className='absolute top-1 left-1 cursor-pointer'
-        >
-          {info?.inTogo ? <Togo width='20' height='20' viewBox='4 0 40 40' /> : <EmptyTogo />}
-        </div>
-      </div>
-      <div className='flex flex-col justify-between w-2/3 ml-2 '>
-        <div className='w-full'>
-          <div className='flex justify-between mb-2'>
-            <p className='text-[10px] text-gray-400'>
-              {info?.popupStore?.startDate.toString().substring(0, 10) +
-                ' ~ ' +
-                info?.popupStore?.endDate.toString().substring(0, 10)}
-            </p>
-            <Badge badgeState={periodState} diff={diffDay} />
-          </div>
-          <p
+    <Suspense>
+      <div
+        className={`flex h-[120px] p-3 border-b border-b-gray-100 ${
+          period?.length !== 0 && !period?.includes(periodState) ? 'hidden' : ''
+        }`}
+      >
+        <div className='w-[100px] h-[100px] relative rounded-md aspect-square overflow-hidden'>
+          <Image
             onClick={() => {
               router.push(`/popup/${info?.popupStore.id}`);
             }}
-            className='font-bold -mt-2'
-          >
-            {info?.popupStore?.name}
-          </p>
-        </div>
-        <div className='flex justify-between items-end'>
-          <p className='text-[10px] text-gray-400'>{info?.popupStore?.address}</p>
-          <button
+            src={info?.popupStore?.imageUrl ? info.popupStore?.imageUrl : Test}
+            alt='설명'
+            className='w-[100px] h-[100px]'
+            fill
+          />
+          <div
             onClick={() => {
-              handleDestinationBtn();
+              info.inTogo ? handleDeleteTogoButton() : handleTogoButton();
             }}
-            className='flex justify-center items-center shrink-0 w-11 h-11 border border-gray-300 rounded-full '
+            className='absolute top-1 left-1 cursor-pointer'
           >
-            <DestinationIcon />
-          </button>
+            {info?.inTogo ? <Togo width='20' height='20' viewBox='4 0 40 40' /> : <EmptyTogo />}
+          </div>
+        </div>
+        <div className='flex flex-col justify-between w-2/3 ml-2 '>
+          <div className='w-full'>
+            <div className='flex justify-between mb-2'>
+              <p className='text-[10px] text-gray-400'>
+                {info?.popupStore?.startDate.toString().substring(0, 10) +
+                  ' ~ ' +
+                  info?.popupStore?.endDate.toString().substring(0, 10)}
+              </p>
+              <Badge badgeState={periodState} diff={diffDay} />
+            </div>
+            <p
+              onClick={() => {
+                router.push(`/popup/${info?.popupStore.id}`);
+              }}
+              className='font-bold -mt-2'
+            >
+              {info?.popupStore?.name}
+            </p>
+          </div>
+          <div className='flex justify-between items-end'>
+            <p className='text-[10px] text-gray-400'>{info?.popupStore?.address}</p>
+            <button
+              onClick={() => {
+                handleDestinationBtn();
+              }}
+              className='flex justify-center items-center shrink-0 w-11 h-11 border border-gray-300 rounded-full '
+            >
+              <DestinationIcon />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </Suspense>
   );
 }
