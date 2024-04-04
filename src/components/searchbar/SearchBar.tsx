@@ -18,9 +18,9 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
   const [date, setDate] = useRecoilState<Date>(dateState);
   const detailParams = usePathname();
   const searchParams = useSearchParams();
-  const searchKeyword = searchParams.get('search');
+  const searchKeyword = searchParams?.get('search');
   const router = useRouter();
-  const searchKey = detailParams.split('/')[2];
+  const searchKey = detailParams?.split('/')[2];
 
   const handleBack = () => {
     router.back();
@@ -35,20 +35,22 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
   };
 
   useEffect(() => {
-    apiCred
-      .get('/popup/find-all')
-      .then((res) =>
-        res.data.find(
-          (item: { popupStore: { id: number } }) => item.popupStore.id == parseInt(searchKey),
-        ),
-      )
-      .then((res) => {
-        setSearch(res.popupStore.name);
-      })
-      .catch(() => {
-        console.log('error');
-      });
-  }, []);
+    if (searchKey) {
+      apiCred
+        .get('/popup/find-all')
+        .then((res) =>
+          res.data.find(
+            (item: { popupStore: { id: number } }) => item.popupStore.id == parseInt(searchKey),
+          ),
+        )
+        .then((res) => {
+          setSearch(res.popupStore.name);
+        })
+        .catch(() => {
+          console.log('error');
+        });
+    }
+  }, [searchKey]);
 
   useEffect(() => {
     if (typeof searchKeyword === 'string') setSearch(searchKeyword);

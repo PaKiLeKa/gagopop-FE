@@ -33,7 +33,7 @@ export default function PopUpDetail() {
   const { periodState, diffDay } = usePeriod(popup?.popupStore!);
   const [enlarge, setEnlarge] = useState<boolean>(false);
   const [wish, setWish] = useState<boolean>();
-  const searchParams = pathname.split('/')[2];
+  const searchParams = pathname?.split('/')[2];
 
   const handleDestinationBtn = () => {
     const filteredPopups = popup && popup.popupStore;
@@ -86,20 +86,22 @@ export default function PopUpDetail() {
   };
 
   useEffect(() => {
-    apiCred
-      .get('/popup/find-all')
-      .then((res) =>
-        res.data.find(
-          (item: { popupStore: { id: number } }) => item.popupStore.id == parseInt(searchParams),
-        ),
-      )
-      .then((res) => {
-        setPopup(res);
-      })
-      .catch(() => {
-        console.log('error');
-      });
-  }, []);
+    if (searchParams) {
+      apiCred
+        .get('/popup/find-all')
+        .then((res) =>
+          res.data.find(
+            (item: { popupStore: { id: number } }) => item.popupStore.id == parseInt(searchParams),
+          ),
+        )
+        .then((res) => {
+          setPopup(res);
+        })
+        .catch(() => {
+          console.log('error');
+        });
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (popup) {

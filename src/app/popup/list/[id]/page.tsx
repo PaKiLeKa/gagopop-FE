@@ -15,15 +15,19 @@ export default function PopUpList() {
   type PopupList = [string, PopupType[]];
 
   useEffect(() => {
-    apiCred
-      .get('/popup/info')
-      .then((res) => Object.entries(res.data))
-      .then((res) => {
-        const filtered = res.find(([key, _]) => key == decodeURIComponent(pathname).split('/')[3]);
-        setList(filtered as PopupList);
-      })
-      .catch((e) => console.log(e));
-  }, []);
+    if (pathname) {
+      apiCred
+        .get('/popup/info')
+        .then((res) => Object.entries(res.data))
+        .then((res) => {
+          const filtered = res.find(
+            ([key, _]) => key == decodeURIComponent(pathname).split('/')[3],
+          );
+          setList(filtered as PopupList);
+        })
+        .catch((e) => console.log(e));
+    }
+  }, [pathname]);
 
   return (
     <Suspense>

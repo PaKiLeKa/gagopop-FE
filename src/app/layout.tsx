@@ -20,7 +20,6 @@ declare global {
     Kakao: any;
   }
 }
-const APPKEY = process.env.NEXT_PUBLIC_TMAP_API;
 
 export default async function RootLayout({
   children,
