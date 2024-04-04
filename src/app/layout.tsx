@@ -30,10 +30,11 @@ export default async function RootLayout({
   return (
     <html lang='en'>
       <head>
-        <script
+        <script src='/api/tmap-script'></script>
+        {/* <script
           type='text/javascript'
           src={`https://apis.openapi.sk.com/tmap/jsv2?version=1&appkey=${APPKEY}`}
-        ></script>
+        ></script> */}
       </head>
       <body>
         <RecoilRootWrap>

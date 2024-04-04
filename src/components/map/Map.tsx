@@ -26,7 +26,7 @@ export default function Map() {
     setCenter: (arg0: any) => void;
     setZoom: (arg0: number) => void;
   }
-  
+
   // 경로 저장
   useEffect(() => {
     const destinationLatLng: string[] = [];
@@ -143,7 +143,7 @@ export default function Map() {
   // }, []);
 
   useEffect(() => {
-      onLoadMap();
+    onLoadMap();
   }, []);
   // 팝업 리스트 불러오기
   useEffect(() => {
@@ -219,26 +219,17 @@ export default function Map() {
           drawInfoArr = [];
 
           try {
-            const response = await axios.post(
-              'https://apis.openapi.sk.com/tmap/routes/pedestrian',
-              {
-                startX: startLng,
-                startY: startLat,
-                endX: endLng,
-                endY: endLat,
-                reqCoordType: 'WGS84GEO',
-                resCoordType: 'EPSG3857',
-                startName: '출발지',
-                endName: '도착지',
-                passList: destinationXY,
-              },
-              {
-                headers: {
-                  appKey: APPKEY,
-                  'Content-Type': 'application/json',
-                },
-              },
-            );
+            const response = await axios.post('api/tmap-pedestrian', {
+              startX: startLng,
+              startY: startLat,
+              endX: endLng,
+              endY: endLat,
+              reqCoordType: 'WGS84GEO',
+              resCoordType: 'EPSG3857',
+              startName: '출발지',
+              endName: '도착지',
+              passList: destinationXY,
+            });
 
             const resultData = response.data.features;
 
