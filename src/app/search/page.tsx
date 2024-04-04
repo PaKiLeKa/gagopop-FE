@@ -61,7 +61,7 @@ export default function SearchList() {
       .catch(() => {
         console.log('error');
       });
-  }, []);
+  }, [search]);
 
   return (
     <Suspense>

@@ -18,6 +18,9 @@ export default function EditProfile() {
       .get('/user/profile')
       .then((res) => {
         setUserData(res.data);
+        if (res.data.nickname) {
+          setNickName(res.data.nickname);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -43,7 +46,7 @@ export default function EditProfile() {
       <p className='mb-1 pl-5 text-sm font-semibold'>닉네임</p>
       <div className='relative'>
         <input
-          defaultValue={userData?.nickname ? userData?.nickname : '닉네임을 변경해보세요!'}
+          defaultValue={nickName}
           onChange={(e) => {
             setNickName(e.target.value);
           }}

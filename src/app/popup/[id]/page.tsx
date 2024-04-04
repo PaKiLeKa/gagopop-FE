@@ -133,7 +133,6 @@ export default function PopUpDetail() {
                         height='40'
                         viewBox='4 5 40 30'
                       />
-                      /
                     </button>
                   ) : (
                     <button
