@@ -219,7 +219,7 @@ export default function Map() {
           drawInfoArr = [];
 
           try {
-            const response = await axios.post('api/tmap-pedestrian', {
+            const response = await axios.post('/api/tmap-pedestrian', {
               startX: startLng,
               startY: startLat,
               endX: endLng,
