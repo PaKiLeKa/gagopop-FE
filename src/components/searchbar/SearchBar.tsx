@@ -204,7 +204,7 @@ export default function SearchBar({ searchBarStyle }: { searchBarStyle: string }
               onChange={(e) => {
                 setSearch(e.target.value);
               }}
-              className='rounded-full pr-32 font-light text-green-500'
+              className='rounded-full pr-32 font-light text-mgreen'
             />
             <DatePicker searchBarStyle={searchBarStyle} />
             <Link

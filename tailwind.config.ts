@@ -18,6 +18,13 @@ const config = {
       },
     },
     extend: {
+      colors: {
+        mgreen: '#00B252',
+        mblue: '#448DFF',
+        mpink: '#F92565',
+        morange: '#FF5C29',
+        myellow: '#FCC32E',
+      },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },

@@ -61,13 +61,13 @@ export default function Wishlist() {
           <TabsTrigger
             value='open'
             className={`relative ml-2 w-24 h-[42px] text-base ${
-              activeTab === 'open' ? 'text-red-500' : 'text-black'
+              activeTab === 'open' ? 'text-mpink' : 'text-black'
             }`}
             onClick={() => setActiveTab('open')}
           >
             {activeTab === 'open' ? (
               <>
-                <div className='absolute top-[43px] w-full h-1 rounded-[50px_50px_0_0] bg-red-500'></div>
+                <div className='absolute top-[43px] w-full h-1 rounded-[50px_50px_0_0] bg-mpink'></div>
               </>
             ) : null}
             오픈중
@@ -75,13 +75,13 @@ export default function Wishlist() {
           <TabsTrigger
             value='openyet'
             className={`relative w-24 h-[42px] text-base ${
-              activeTab === 'openyet' ? 'text-red-500 ' : 'text-black'
+              activeTab === 'openyet' ? 'text-mpink' : 'text-black'
             }`}
             onClick={() => setActiveTab('openyet')}
           >
             {activeTab === 'openyet' ? (
               <>
-                <div className='absolute top-[43px] w-full h-1 rounded-[50px_50px_0_0] bg-red-500'></div>
+                <div className='absolute top-[43px] w-full h-1 rounded-[50px_50px_0_0] bg-mpink'></div>
               </>
             ) : null}
             오픈예정
@@ -89,13 +89,13 @@ export default function Wishlist() {
           <TabsTrigger
             value='end'
             className={`relative w-24 h-[42px] text-base ${
-              activeTab === 'end' ? 'text-red-500' : 'text-black'
+              activeTab === 'end' ? 'text-mpink' : 'text-black'
             }`}
             onClick={() => setActiveTab('end')}
           >
             {activeTab === 'end' ? (
               <>
-                <div className='absolute top-[43px] w-full h-1 rounded-[50px_50px_0_0] bg-red-500'></div>
+                <div className='absolute top-[43px] w-full h-1 rounded-[50px_50px_0_0] bg-mpink'></div>
               </>
             ) : null}
             종료

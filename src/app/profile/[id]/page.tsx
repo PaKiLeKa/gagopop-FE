@@ -38,21 +38,21 @@ export default function Profile() {
           href={userData?.email + '/stamp'}
           className='flex flex-col justify-center items-center w-[100px]'
         >
-          <p className='text-2xl text-green-500'>{userData?.stampTotal}</p>
+          <p className='text-2xl text-mgreen'>{userData?.stampTotal}</p>
           <p className='text-base text-gray-400'>스탬프</p>
         </Link>
         <Link
           href={userData?.email + '/togolist'}
           className='flex flex-col justify-center items-center w-[100px]'
         >
-          <p className='text-2xl text-blue-500'>{userData?.togolistTotal}</p>
+          <p className='text-2xl text-mblue'>{userData?.togolistTotal}</p>
           <p className='text-base text-gray-400'>TO-GO</p>
         </Link>
         <Link
           href={userData?.email + '/wishlist'}
           className='flex flex-col justify-center items-center w-[100px]'
         >
-          <p className='text-2xl text-red-500'>{userData?.wishlistTotal}</p>
+          <p className='text-2xl text-mpink'>{userData?.wishlistTotal}</p>
           <p className='text-base text-gray-400'>위시리스트</p>
         </Link>
       </div>

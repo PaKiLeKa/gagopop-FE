@@ -28,13 +28,13 @@ export default function CsCenter() {
         <TabsList className='grid w-full h-[53px] grid-cols-2 text-black bg-white border-b'>
           <TabsTrigger
             value='faq'
-            className='h-12 font-light data-[state=active]:font-semibold data-[state=active]:text-green-500 data-[state=active]:border-green-500 data-[state=active]:border-b-4'
+            className='h-12 font-light data-[state=active]:font-semibold data-[state=active]:text-mgreen data-[state=active]:border-mgreen data-[state=active]:border-b-4'
           >
             FAQ(자주 묻는 질문)
           </TabsTrigger>
           <TabsTrigger
             value='inquiry'
-            className='h-12 font-light data-[state=active]:font-semibold data-[state=active]:text-green-500 data-[state=active]:border-green-500 data-[state=active]:border-b-4'
+            className='h-12 font-light data-[state=active]:font-semibold data-[state=active]:text-mgreen data-[state=active]:border-mgreen data-[state=active]:border-b-4'
           >
             제보 혹은 문의하기
           </TabsTrigger>
@@ -44,25 +44,25 @@ export default function CsCenter() {
             <TabsList className='flex justify-start items-center gap-1 ml-2 text-black bg-white'>
               <TabsTrigger
                 value='이용문의'
-                className='border rounded-full p-2 text-xs data-[state=active]:bg-green-100  data-[state=active]:text-green-500  data-[state=active]:border-green-500'
+                className='border rounded-full p-2 text-xs data-[state=active]:bg-green-100  data-[state=active]:text-mgreen data-[state=active]:border-mgreen'
               >
                 이용문의
               </TabsTrigger>
               <TabsTrigger
                 value='회원문의'
-                className='border rounded-full p-2 text-xs data-[state=active]:bg-green-100  data-[state=active]:text-green-500  data-[state=active]:border-green-500'
+                className='border rounded-full p-2 text-xs data-[state=active]:bg-green-100  data-[state=active]:text-mgreen  data-[state=active]:border-mgreen'
               >
                 회원문의
               </TabsTrigger>
               <TabsTrigger
                 value='제보/홍보문의'
-                className='border rounded-full p-2 text-xs data-[state=active]:bg-green-100  data-[state=active]:text-green-500  data-[state=active]:border-green-500'
+                className='border rounded-full p-2 text-xs data-[state=active]:bg-green-100  data-[state=active]:text-mgreen  data-[state=active]:border-mgreen'
               >
                 제보/홍보문의
               </TabsTrigger>
               <TabsTrigger
                 value='기타'
-                className='border rounded-full p-2 text-xs data-[state=active]:bg-green-100  data-[state=active]:text-green-500  data-[state=active]:border-green-500'
+                className='border rounded-full p-2 text-xs data-[state=active]:bg-green-100  data-[state=active]:text-mgreen  data-[state=active]:border-mgreen'
               >
                 기타
               </TabsTrigger>

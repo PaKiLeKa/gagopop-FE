@@ -17,7 +17,7 @@ export default function HorizonScroll({ list }: { list: [string, PopupType[]] })
       <div className='flex justify-between w-full px-3'>
         <div className='text-base'>🔥 {list[0]}</div>
         <div className='flex justify-center items-center'>
-          <Link href={`/popup/list/${list[0].toString()}`} className='text-sm text-green-400'>
+          <Link href={`/popup/list/${list[0].toString()}`} className='text-sm text-mgreen'>
             더보기
           </Link>
           <RightArr />

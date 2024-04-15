@@ -31,7 +31,7 @@ export default function DirectionSlide({
         {/* 슬라이딩 패널 내용 */}
         <div className='overflow-auto p-4 h-[93%]'>
           <div className='flex gap-2 mb-2'>
-            <div className='bg-yellow-500 rounded-full px-2 text-[10px]'>추천</div>
+            <div className='bg-myellow rounded-full px-2 text-[10px]'>추천</div>
             <span className='text-xs'>도보</span>
           </div>
           <div className='flex gap-1 items-center'>

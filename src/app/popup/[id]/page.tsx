@@ -250,7 +250,7 @@ export default function PopUpDetail() {
 
         <button
           onClick={handleDestinationBtn}
-          className='flex justify-center items-center w-full h-12 bg-yellow-500'
+          className='flex justify-center items-center w-full h-12 bg-myellow'
         >
           목적지설정
         </button>
