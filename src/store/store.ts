@@ -15,12 +15,6 @@ export const dateState = atom<Date>({
   default: today,
 });
 
-export const loginState = atom<boolean>({
-  key: 'loginState',
-  default: false,
-  effects_UNSTABLE: [persistAtom],
-});
-
 export const splashState = atom<boolean>({
   key: 'splash',
   default: true,

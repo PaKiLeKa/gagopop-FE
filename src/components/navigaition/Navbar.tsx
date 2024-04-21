@@ -13,15 +13,15 @@ import PopupHover from '../../../public/icons/navbar/popup_h.png';
 import WishHover from '../../../public/icons/navbar/wish_h.png';
 import ProfileHover from '../../../public/icons/navbar/profile_h.png';
 import { apiCred } from '@/api';
-import { useRecoilState } from 'recoil';
-import { loginState } from '@/store/store';
+import { Cookies } from 'react-cookie';
 
 export default function Navbar() {
   const [userEmail, setUserEmail] = useState<string>('');
-  const [login, setloginState] = useRecoilState(loginState);
   const pathname = usePathname();
   const initailPathName = pathname?.split('/')[1];
   const wishPathName = pathname?.split('/')[3];
+  const cookie = new Cookies();
+  const loginState = cookie.get('login');
 
   useEffect(() => {
     apiCred
@@ -53,7 +53,7 @@ export default function Navbar() {
         ) : null}
       </Link>
       <Link
-        href={login ? '/profile/' + userEmail + '/wishlist' : '/login'}
+        href={loginState == true ? '/profile/' + userEmail + '/wishlist' : '/login'}
         className='flex flex-col justify-center items-center w-[84px] group'
       >
         <Image src={WishIcon} alt='위시리스트으로 이동' className='group-hover:hidden' />
@@ -63,7 +63,7 @@ export default function Navbar() {
           <div className='absolute top-0 bg-black w-[80px] h-1 rounded-[0_0_80px_80px]'></div>
         ) : null}
       </Link>
-      {login ? (
+      {loginState == true ? (
         <Link
           href={'/profile/' + userEmail}
           className='flex flex-col justify-center items-center w-[84px] group'

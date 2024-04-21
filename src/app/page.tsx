@@ -10,6 +10,7 @@ import { useRecoilState } from 'recoil';
 import { api, apiCred } from '@/api';
 import { PopupTypewithWish } from '../types/types';
 import Splash from '@/components/splash/Splash';
+
 export default function Home() {
   const [searchStyle, setSearchStyle] = useState('circle');
   const [popupList, setPopupList] = useState<PopupTypewithWish[]>([]);

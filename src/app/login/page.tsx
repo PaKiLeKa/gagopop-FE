@@ -7,14 +7,17 @@ import HeartIcon from '../../../public/icons/marker/wishpin.svg';
 import GoogleIcon from '../../../public/icons/google.svg';
 import Logo from '../../../public/images/logo.png';
 import { useRouter } from 'next/navigation';
-import { loginState } from '@/store/store';
-import { useRecoilState } from 'recoil';
+import { Cookies } from 'react-cookie';
 
 export default function Login() {
-  const [login, setloginState] = useRecoilState(loginState);
+  const cookie = new Cookies();
+
   const router = useRouter();
+
   const handleLogin = () => {
-    setloginState(true);
+    const expireTime = new Date();
+    expireTime.setTime(expireTime.getTime() + 60 * 60 * 60 * 60);
+    cookie.set('login', true, { path: '/', expires: expireTime });
     router.push('https://gagopop.kro.kr/oauth2/authorization/google');
   };
 
