@@ -24,6 +24,7 @@ import { PopupType, PopupTypewithWish } from '@/types/types';
 import { usePathname, useRouter } from 'next/navigation';
 import usePeriod from '@/hooks/usePeriod';
 import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
+import { toast } from 'sonner';
 
 export default function PopUpDetail() {
   const [destination, setDestinationState] = useRecoilState(destinationState);
@@ -38,8 +39,14 @@ export default function PopUpDetail() {
   const handleDestinationBtn = () => {
     const filteredPopups = popup && popup.popupStore;
     if (filteredPopups !== undefined) {
-      if (destination.length < 5 && !destination.some((v) => v.id === filteredPopups.id))
+      if (destination.length < 5 && !destination.some((v) => v.id === filteredPopups.id)) {
         setDestinationState([...destination, filteredPopups]);
+        toast('목적지가 설정되었습니다.');
+      } else if (destination.some((v) => v.id === filteredPopups.id)) {
+        toast('이미 추가된 목적지입니다.');
+      } else {
+        toast('최대 5개까지 설정 가능합니다.');
+      }
     }
   };
 

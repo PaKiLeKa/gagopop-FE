@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import usePeriod from '@/hooks/usePeriod';
 import { api, apiCred } from '@/api';
 import { Suspense, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export default function PopupCard({ info, period }: { info: PopupType; period: string[] }) {
   const [wishList, setWishList] = useState<PopupTypewithTogo[]>();
@@ -19,8 +20,14 @@ export default function PopupCard({ info, period }: { info: PopupType; period: s
   const router = useRouter();
 
   const handleDestinationBtn = () => {
-    if (destination.length < 5 && !destination.some((v) => v.id === info.id))
+    if (destination.length < 5 && !destination.some((v) => v.id === info.id)) {
       setDestinationState([...destination, info]);
+      toast('목적지가 설정되었습니다.');
+    } else if (destination.some((v) => v.id === info.id)) {
+      toast('이미 추가된 목적지입니다.');
+    } else {
+      toast('최대 5개까지 설정 가능합니다.');
+    }
   };
 
   const { periodState, diffDay } = usePeriod(info);

@@ -5,6 +5,8 @@ import Navbar from '../components/navigaition/Navbar';
 import RecoilRootWrap from '@/util/RecoilRootWrap';
 import Script from 'next/script';
 import KakaoScript from '@/script/KakaoScript';
+import ReactQueryProviders from '@/hooks/useReactQuery';
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: '가고팝',
@@ -36,10 +38,13 @@ export default async function RootLayout({
         ></script> */}
       </head>
       <body>
-        <RecoilRootWrap>
-          {children}
-          <Navbar />
-        </RecoilRootWrap>
+        <ReactQueryProviders>
+          <RecoilRootWrap>
+            {children}
+            <Toaster position='bottom-center' className='z-50 bottom-20' />
+            <Navbar />
+          </RecoilRootWrap>
+        </ReactQueryProviders>
       </body>
       <KakaoScript />
     </html>
