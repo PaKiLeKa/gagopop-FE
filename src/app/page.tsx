@@ -10,12 +10,21 @@ import { useRecoilState } from 'recoil';
 import { api, apiCred } from '@/api';
 import { PopupTypewithWish } from '../types/types';
 import Splash from '@/components/splash/Splash';
+import { useQuery } from '@tanstack/react-query';
 
 export default function Home() {
   const [searchStyle, setSearchStyle] = useState('circle');
-  const [popupList, setPopupList] = useState<PopupTypewithWish[]>([]);
+  // const [popupList, setPopupList] = useState<PopupTypewithWish[]>([]);
   const [destination, setDestinationState] = useRecoilState(destinationState);
   const [splash, setSplashState] = useRecoilState(splashState);
+
+  const popupList = useQuery({
+    queryKey: ['popupList'],
+    queryFn: async () => {
+      const response = await apiCred.get('/popup/find-all');
+      return response.data;
+    },
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -33,17 +42,17 @@ export default function Home() {
     }
   }, [destination]);
 
-  useEffect(() => {
-    apiCred
-      .get('/popup/find-all')
-      .then((res) => {
-        setPopupList(res.data);
-      })
-      .catch(() => {
-        console.log('error');
-      });
-  }, []);
-
+  // useEffect(() => {
+  //   apiCred
+  //     .get('/popup/find-all')
+  //     .then((res) => {
+  //       setPopupList(res.data);
+  //     })
+  //     .catch(() => {
+  //       console.log('error');
+  //     });
+  // }, []);
+  
   return (
     <Suspense>
       <Splash splash={splash} />
@@ -51,9 +60,9 @@ export default function Home() {
       <Map />
       <BottomSlide
         content={
-          popupList.length > 0 && (
+          popupList.data?.length > 0 && (
             <div className='h-full mt-4 pb-48 overflow-auto'>
-              {popupList?.map((popup) => (
+              {popupList.data?.map((popup: PopupTypewithWish) => (
                 <PopupCard
                   key={popup.popupStore.id}
                   info={popup}
