@@ -25,7 +25,7 @@ export default function HorizonScroll({ list }: { list: [string, PopupType[]] })
       </div>
       <ScrollArea className='w-full whitespace-nowrap rounded-md p-3'>
         <div className='flex w-max space-x-2'>
-          {list[1].map((popup: any) => (
+          {list[1].map((popup: PopupType) => (
             <figure key={popup.id} className='shrink-0'>
               <div className='overflow-hidden rounded-md'>
                 <Image

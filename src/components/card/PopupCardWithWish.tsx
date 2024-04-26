@@ -88,9 +88,9 @@ export default function PopupCard({ info, period }: { info: PopupTypewithWish; p
           <div className='w-full'>
             <div className='flex justify-between mb-2'>
               <p className='text-[10px] text-gray-400'>
-                {info?.popupStore?.startDate.toString().substring(0, 10) +
+                {info?.popupStore?.startDate?.toString().substring(0, 10) +
                   ' ~ ' +
-                  info?.popupStore?.endDate.toString().substring(0, 10)}
+                  info?.popupStore?.endDate?.toString().substring(0, 10)}
               </p>
               <Badge badgeState={periodState} diff={diffDay} />
             </div>

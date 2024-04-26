@@ -1,4 +1,17 @@
-export default async function handler(req: any, res: { setHeader: (arg0: string, arg1: string) => void; status: (arg0: number) => { (): any; new(): any; send: { (arg0: string): void; new(): any; }; json: { (arg0: { error: string; }): void; new(): any; }; }; }) {
+import { NextApiRequest } from 'next';
+
+export default async function handler(
+  req: NextApiRequest,
+  res: {
+    setHeader: (arg0: string, arg1: string) => void;
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      send: { (arg0: string): void; new (): any };
+      json: { (arg0: { error: string }): void; new (): any };
+    };
+  },
+) {
   const APPKEY = process.env.NEXT_PUBLIC_TMAP_API;
 
   try {
