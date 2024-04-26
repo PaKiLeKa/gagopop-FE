@@ -1,7 +1,7 @@
 'use client';
 
 import Script from 'next/script';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState, useRef } from 'react';
 import CurrentPositionIcon from '../../../public/icons/currentPosition.svg';
 import { PopupTypewithWish } from '@/types/types';
 import { api, apiCred } from '@/api';
@@ -11,7 +11,8 @@ import { destinationState } from '@/store/store';
 import DirectionSlide from '../slide/DirectionSlide';
 
 export default function Map() {
-  const [src, setSrc] = useState<string>();
+  // const [src, setSrc] = useState<string>();
+  // const APPKEY = process.env.NEXT_PUBLIC_TMAP_API;
   const [currentMap, setCurrentMap] = useState<currentMapType>();
   const [currentXY, setCurrentXY] = useState<number[]>([]);
   const [destination, setDestinationState] = useRecoilState(destinationState);
@@ -19,8 +20,10 @@ export default function Map() {
   const [clickedPosition, setClickedPosition] = useState<string[]>();
   const [result, setResult] = useState<string[]>([]);
   const [modal, setModal] = useState<boolean>(false);
-  const APPKEY = process.env.NEXT_PUBLIC_TMAP_API;
   const [popupList, setPopupList] = useState<PopupTypewithWish[]>();
+  const drawInfoArr = useRef<any[]>([]);
+  const resultdrawArr = useRef<any[]>([]);
+  const resultMarker = useRef<any[]>([]);
 
   interface currentMapType {
     setCenter: (arg0: any) => void;
@@ -38,6 +41,7 @@ export default function Map() {
 
   // 지도 불러오기
   const onLoadMap = () => {
+    console.log('loadmap');
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         let lat = position.coords.latitude;
@@ -62,7 +66,6 @@ export default function Map() {
             }
             clickMarker = [];
           }
-
           removeMarkers();
 
           let lonlat = e.latLng;
@@ -195,29 +198,27 @@ export default function Map() {
     const startLng = clickedPosition && clickedPosition[0];
     const endLat = Object.values(destination)[Object.values(destination).length - 1].latitude;
     const endLng = Object.values(destination)[Object.values(destination).length - 1].longitude;
-    let drawInfoArr = [];
-    let resultdrawArr: any[] = [];
-    let resultMarker: any[] = [];
+
+    // 기존 그려진 라인 & 마커 초기화
+    if (resultdrawArr.current.length > 0) {
+      for (let i = 0; i < resultdrawArr.current.length; i++) {
+        resultdrawArr.current[i].setMap(null);
+      }
+      resultdrawArr.current = [];
+    }
+    if (resultMarker.current.length > 0) {
+      for (let i = 0; i < resultMarker.current.length; i++) {
+        resultMarker.current[i].setMap(null);
+      }
+      resultMarker.current = [];
+    }
+    drawInfoArr.current = [];
+
     api
       .get(`/popup/find-route?latitude=${startLat}&longitude=${startLng}&pid=3,4,5`)
       .then((res) => res.data)
       .then((res) => {
         const handleShowPath = async () => {
-          // 기존 그려진 라인 & 마커 초기화
-          if (resultdrawArr.length > 0) {
-            for (let i = 0; i < resultdrawArr.length; i++) {
-              resultdrawArr[i].setMap(null);
-            }
-            resultdrawArr = [];
-          }
-          if (resultMarker.length > 0) {
-            for (let i = 0; i < resultMarker.length; i++) {
-              resultMarker[i].setMap(null);
-            }
-            resultMarker = [];
-          }
-          drawInfoArr = [];
-
           try {
             const response = await axios.post('/api/tmap-pedestrian', {
               startX: startLng,
@@ -242,7 +243,6 @@ export default function Map() {
             for (const result of resultData) {
               const geometry = result.geometry;
               let properties = result.properties;
-              let polyline;
 
               if (geometry.type === 'LineString') {
                 for (const coord of geometry.coordinates) {
@@ -254,7 +254,7 @@ export default function Map() {
                     convertPoint._lat,
                     convertPoint._lng,
                   );
-                  drawInfoArr.push(convertChange);
+                  drawInfoArr.current.push(convertChange);
                 }
               } else {
                 let markerImg = '';
@@ -308,11 +308,11 @@ export default function Map() {
                   iconSize: size,
                   map: currentMap,
                 });
-                resultMarker.push(marker_p);
+                resultMarker.current.push(marker_p);
               }
             }
 
-            drawLine(drawInfoArr); // drawLine 함수 호출
+            drawLine(drawInfoArr.current); // drawLine 함수 호출
           } catch (error) {
             console.error('Error:', error);
           }
@@ -327,8 +327,7 @@ export default function Map() {
             strokeWeight: 6,
             map: currentMap,
           });
-
-          resultdrawArr.push(polyline);
+          resultdrawArr.current.push(polyline);
           currentMap?.setCenter(new window.Tmapv2.LatLng(startLat, startLng));
           currentMap?.setZoom(15);
         };
