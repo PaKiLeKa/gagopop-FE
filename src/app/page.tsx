@@ -61,7 +61,7 @@ export default function Home() {
       <BottomSlide
         content={
           popupList.data?.length > 0 && (
-            <div className='h-full mt-4 pb-48 overflow-auto'>
+            <div className='h-full mt-4 pb-48'>
               {popupList.data?.map((popup: PopupTypewithWish) => (
                 <PopupCard
                   key={popup.popupStore.id}
